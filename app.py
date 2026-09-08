@@ -28,7 +28,7 @@ def chat():
     try:
         # 2. Feed the entire history array directly into Groq
         completion = client.chat.completions.create(
-            model="qwen/qwen3.6-27b",
+            model="meta-llama/llama-prompt-guard-2-86m",
             messages=chat_history
         )
         bot_reply = completion.choices[0].message.content
