@@ -39,7 +39,8 @@ def chat():
 
             # Premium Free Model: FLUX.1 (Way better than basic options)
             API_URL = "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell"
-            headers = {"Authorization": f"Bearer {HF_TOKEN}"}
+            headers = {"Authorization": f"Bearer {HF_TOKEN}", 
+                       "Content-Type": "application/json"}
             
             # Request raw image bytes from Hugging Face
             response = requests.post(API_URL, headers=headers, json={"inputs": clean_prompt})
