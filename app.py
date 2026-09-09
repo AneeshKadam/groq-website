@@ -38,7 +38,7 @@ def chat():
                 clean_prompt = "cinematic digital painting artwork, highly detailed"
 
             # Premium Free Model: FLUX.1 (Way better than basic options)
-            API_URL = "https://huggingface.co"
+            API_URL = "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell"
             headers = {"Authorization": f"Bearer {HF_TOKEN}"}
             
             # Request raw image bytes from Hugging Face
