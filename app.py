@@ -26,7 +26,7 @@ def chat():
     last_user_message = chat_history[-1]["content"] if chat_history else ""
     msg_lower = last_user_message.lower()
 
-        keywords = ["generate an image of", "generate image of", "generate an image", "generate image", "create an image of", "create an image", "picture of", "draw a", "draw"]
+    keywords = ["generate an image of", "generate image of", "generate an image", "generate image", "create an image of", "create an image", "picture of", "draw a", "draw"]
     if any(kw in msg_lower for kw in keywords):
         try:
             clean_prompt = msg_lower
