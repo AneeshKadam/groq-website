@@ -4,14 +4,13 @@ import requests
 from flask import Flask, request, jsonify, send_from_directory
 from dotenv import load_dotenv
 from groq import Groq
-from together import Together  # 1. ADDED TOGETHER CLIENT
 
 app = Flask(__name__)
 load_dotenv()
 
-# Initialize both AI clients safely from environment variables
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-together_client = Together(api_key=os.getenv("TOGETHER_API_KEY"))  # 2. INITIALIZED HERE
+# Do not prevent the Flask app from starting when the optional Groq key is absent.
+groq_api_key = os.getenv("GROQ_API_KEY", "").strip()
+client = Groq(api_key=groq_api_key) if groq_api_key else None
 
 @app.route('/')
 def home():
