@@ -1,17 +1,17 @@
 import os
-import requests
 import base64
-import urllib.parse
+import requests
 from flask import Flask, request, jsonify, send_from_directory
 from dotenv import load_dotenv
 from groq import Groq
+from together import Together  # 1. ADDED TOGETHER CLIENT
 
 app = Flask(__name__)
 load_dotenv()
 
+# Initialize both AI clients safely from environment variables
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-# Securely pulls the Hugging Face token from Render
-HF_TOKEN = os.getenv("HF_TOKEN")
+together_client = Together(api_key=os.getenv("TOGETHER_API_KEY"))  # 2. INITIALIZED HERE
 
 @app.route('/')
 def home():
@@ -33,42 +33,28 @@ def chat():
             for kw in keywords:
                 clean_prompt = clean_prompt.replace(kw, "", 1)
             clean_prompt = clean_prompt.strip()
-            
+
             if not clean_prompt:
                 clean_prompt = "cinematic digital painting artwork, highly detailed"
 
-            # 1. FIXED DYNAMIC ROUTER ENDPOINT
-            API_URL = "https://huggingface.co"
-            
-            # 2. FIXED AUTHENTICATION HEADERS: Ensures token extraction matches precisely
+            API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
             token = os.environ.get("HF_TOKEN", "").strip()
             headers = {
-                "Authorization": f"Bearer {token}",
-                "Content-Type": "application/json"
+                "Authorization": f"Bearer {token}"
             }
-            
-            # Send payload parameters explicitly inside the json block
-            response = requests.post(API_URL, headers=headers, json={"inputs": clean_prompt})
-            
+
+            response = requests.post(
+                API_URL,
+                headers=headers,
+                json={"inputs": clean_prompt}
+            )
+
             if response.status_code == 200:
                 base64_image = base64.b64encode(response.content).decode('utf-8')
                 image_data_url = f"data:image/jpeg;base64,{base64_image}"
                 return jsonify({"reply": image_data_url, "is_image": True})
             else:
-                # This helps troubleshoot exactly what character string Hugging Face received
-                return jsonify({"reply": f"Hugging Face Auth Failure: {response.text} (Token Length Sent: {len(token)})", "is_image": False})
-                
+                return jsonify({"reply": f"Image gen failed: {response.status_code} {response.text}", "is_image": False})
+
         except Exception as e:
             return jsonify({"reply": f"Image Generation Error: {str(e)}"}), 500
-
-
-    # Otherwise, pass regular text directly to Groq
-    try:
-        completion = client.chat.completions.create(
-            model="openai/gpt-oss-120b", 
-            messages=chat_history
-        )
-        bot_reply = completion.choices.message.content
-        return jsonify({"reply": bot_reply, "is_image": False})
-    except Exception as e:
-        return jsonify({"reply": f"Backend Error: {str(e)}"}), 500
