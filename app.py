@@ -26,7 +26,7 @@ def chat():
     last_user_message = chat_history[-1]["content"] if chat_history else ""
     msg_lower = last_user_message.lower()
 
-    keywords = ["generate an image of", "generate image of", "generate an image", "generate image", "create an image of", "create an image", "picture of", "draw a", "draw"]
+        keywords = ["generate an image of", "generate image of", "generate an image", "generate image", "create an image of", "create an image", "picture of", "draw a", "draw"]
     if any(kw in msg_lower for kw in keywords):
         try:
             clean_prompt = msg_lower
@@ -37,24 +37,30 @@ def chat():
             if not clean_prompt:
                 clean_prompt = "cinematic digital painting artwork, highly detailed"
 
-            # Premium Free Model: FLUX.1 (Way better than basic options)
-            API_URL = "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell"
-            headers = {"Authorization": f"Bearer {HF_TOKEN}", 
-                       "Content-Type": "application/json"}
+            # 1. FIXED DYNAMIC ROUTER ENDPOINT
+            API_URL = "https://huggingface.co"
             
-            # Request raw image bytes from Hugging Face
+            # 2. FIXED AUTHENTICATION HEADERS: Ensures token extraction matches precisely
+            token = os.environ.get("HF_TOKEN", "").strip()
+            headers = {
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json"
+            }
+            
+            # Send payload parameters explicitly inside the json block
             response = requests.post(API_URL, headers=headers, json={"inputs": clean_prompt})
             
             if response.status_code == 200:
-                # Convert the raw image bytes into a safe Base64 string for HTML
                 base64_image = base64.b64encode(response.content).decode('utf-8')
                 image_data_url = f"data:image/jpeg;base64,{base64_image}"
                 return jsonify({"reply": image_data_url, "is_image": True})
             else:
-                return jsonify({"reply": f"Hugging Face API Error: {response.text}", "is_image": False})
+                # This helps troubleshoot exactly what character string Hugging Face received
+                return jsonify({"reply": f"Hugging Face Auth Failure: {response.text} (Token Length Sent: {len(token)})", "is_image": False})
                 
         except Exception as e:
             return jsonify({"reply": f"Image Generation Error: {str(e)}"}), 500
+
 
     # Otherwise, pass regular text directly to Groq
     try:
