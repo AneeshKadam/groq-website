@@ -57,13 +57,14 @@ def chat():
 
         except Exception as e:
             return jsonify({"reply": f"Image Generation Error: {str(e)}"}), 500
-                else:
+
+    else:
         try:
             if client is None:
                 return jsonify({"reply": "Error: GROQ_API_KEY is not set on the server.", "is_image": False}), 500
 
             completion = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",  # any current Groq model you have access to
+                model="llama-3.3-70b-versatile",
                 messages=chat_history,
                 temperature=0.7,
             )
@@ -72,3 +73,8 @@ def chat():
 
         except Exception as e:
             return jsonify({"reply": f"Chat Error: {str(e)}", "is_image": False}), 500
+
+
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
