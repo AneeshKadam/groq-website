@@ -64,7 +64,7 @@ def chat():
                 return jsonify({"reply": "Error: GROQ_API_KEY is not set on the server.", "is_image": False}), 500
 
             completion = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+                model="openai/gpt-oss-120b",
                 messages=chat_history,
                 temperature=0.7,
             )
