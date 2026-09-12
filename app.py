@@ -36,7 +36,7 @@ def chat():
             if not clean_prompt:
                 clean_prompt = "cinematic digital painting artwork, highly detailed"
 
-            API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
+            API_URL = "https://router.huggingface.co"
             token = os.environ.get("HF_TOKEN", "").strip()
             headers = {
                 "Authorization": f"Bearer {token}"
