@@ -36,41 +36,30 @@ def chat():
             if not clean_prompt:
                 clean_prompt = "cinematic digital painting artwork, highly detailed"
 
-            GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent"
-            gemini_key = os.environ.get("GEMINI_API_KEY", "").strip()
+            TOGETHER_API_URL = "https://api.together.xyz/v1/images/generations"
+            together_key = os.environ.get("TOGETHER_API_KEY", "").strip()
 
-            if not gemini_key:
-                return jsonify({"reply": "Error: GEMINI_API_KEY is not set on the server.", "is_image": False}), 500
+            if not together_key:
+                return jsonify({"reply": "Error: TOGETHER_API_KEY is not set on the server.", "is_image": False}), 500
 
             headers = {
-                "Content-Type": "application/json",
-                "x-goog-api-key": gemini_key
+                "Authorization": f"Bearer {together_key}",
+                "Content-Type": "application/json"
             }
 
             payload = {
-                "contents": [
-                    {"parts": [{"text": clean_prompt}]}
-                ],
-                "generationConfig": {
-                    "responseModalities": ["IMAGE"]
-                }
+                "model": "black-forest-labs/FLUX.1-schnell-Free",
+                "prompt": clean_prompt,
+                "steps": 4
             }
 
-            response = requests.post(GEMINI_API_URL, headers=headers, json=payload)
+            response = requests.post(TOGETHER_API_URL, headers=headers, json=payload)
 
             if response.status_code == 200:
                 result = response.json()
-                # The image is buried inside candidates -> content -> parts -> inlineData -> data
-                parts = result["candidates"][0]["content"]["parts"]
-                image_part = next((p for p in parts if "inlineData" in p), None)
-
-                if image_part:
-                    base64_image = image_part["inlineData"]["data"]
-                    mime_type = image_part["inlineData"].get("mimeType", "image/png")
-                    image_data_url = f"data:{mime_type};base64,{base64_image}"
-                    return jsonify({"reply": image_data_url, "is_image": True})
-                else:
-                    return jsonify({"reply": "Image gen failed: no image data in Gemini response", "is_image": False})
+                base64_image = result["data"][0]["b64_json"]
+                image_data_url = f"data:image/png;base64,{base64_image}"
+                return jsonify({"reply": image_data_url, "is_image": True})
             else:
                 return jsonify({"reply": f"Image gen failed: {response.status_code} {response.text}", "is_image": False})
 
