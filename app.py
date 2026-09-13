@@ -36,22 +36,41 @@ def chat():
             if not clean_prompt:
                 clean_prompt = "cinematic digital painting artwork, highly detailed"
 
-            API_URL = "https://router.huggingface.co/hf-inference/models/stabilityai/stable-diffusion-3-medium-diffusers"
-            token = os.environ.get("HF_TOKEN", "").strip()
+            GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent"
+            gemini_key = os.environ.get("GEMINI_API_KEY", "").strip()
+
+            if not gemini_key:
+                return jsonify({"reply": "Error: GEMINI_API_KEY is not set on the server.", "is_image": False}), 500
+
             headers = {
-                "Authorization": f"Bearer {token}"
+                "Content-Type": "application/json",
+                "x-goog-api-key": gemini_key
             }
 
-            response = requests.post(
-                API_URL,
-                headers=headers,
-                json={"inputs": clean_prompt}
-            )
+            payload = {
+                "contents": [
+                    {"parts": [{"text": clean_prompt}]}
+                ],
+                "generationConfig": {
+                    "responseModalities": ["IMAGE"]
+                }
+            }
+
+            response = requests.post(GEMINI_API_URL, headers=headers, json=payload)
 
             if response.status_code == 200:
-                base64_image = base64.b64encode(response.content).decode('utf-8')
-                image_data_url = f"data:image/jpeg;base64,{base64_image}"
-                return jsonify({"reply": image_data_url, "is_image": True})
+                result = response.json()
+                # The image is buried inside candidates -> content -> parts -> inlineData -> data
+                parts = result["candidates"][0]["content"]["parts"]
+                image_part = next((p for p in parts if "inlineData" in p), None)
+
+                if image_part:
+                    base64_image = image_part["inlineData"]["data"]
+                    mime_type = image_part["inlineData"].get("mimeType", "image/png")
+                    image_data_url = f"data:{mime_type};base64,{base64_image}"
+                    return jsonify({"reply": image_data_url, "is_image": True})
+                else:
+                    return jsonify({"reply": "Image gen failed: no image data in Gemini response", "is_image": False})
             else:
                 return jsonify({"reply": f"Image gen failed: {response.status_code} {response.text}", "is_image": False})
 
