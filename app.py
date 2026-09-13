@@ -36,29 +36,26 @@ def chat():
             if not clean_prompt:
                 clean_prompt = "cinematic digital painting artwork, highly detailed"
 
-            TOGETHER_API_URL = "https://api.together.xyz/v1/images/generations"
-            together_key = os.environ.get("TOGETHER_API_KEY", "").strip()
+            account_id = os.environ.get("CLOUDFLARE_ACCOUNT_ID", "").strip()
+            cf_token = os.environ.get("CLOUDFLARE_API_TOKEN", "").strip()
 
-            if not together_key:
-                return jsonify({"reply": "Error: TOGETHER_API_KEY is not set on the server.", "is_image": False}), 500
+            if not account_id or not cf_token:
+                return jsonify({"reply": "Error: CLOUDFLARE_ACCOUNT_ID or CLOUDFLARE_API_TOKEN is not set on the server.", "is_image": False}), 500
+
+            CF_API_URL = f"https://api.cloudflare.com/client/v4/accounts/{account_id}/ai/run/@cf/black-forest-labs/flux-1-schnell"
 
             headers = {
-                "Authorization": f"Bearer {together_key}",
+                "Authorization": f"Bearer {cf_token}",
                 "Content-Type": "application/json"
             }
 
-            payload = {
-                "model": "black-forest-labs/FLUX.1-schnell-Free",
-                "prompt": clean_prompt,
-                "steps": 4
-            }
-
-            response = requests.post(TOGETHER_API_URL, headers=headers, json=payload)
+            response = requests.post(CF_API_URL, headers=headers, json={"prompt": clean_prompt})
 
             if response.status_code == 200:
                 result = response.json()
-                base64_image = result["data"][0]["b64_json"]
-                image_data_url = f"data:image/png;base64,{base64_image}"
+                # Cloudflare wraps the actual output inside a "result" object
+                base64_image = result["result"]["image"]
+                image_data_url = f"data:image/jpeg;base64,{base64_image}"
                 return jsonify({"reply": image_data_url, "is_image": True})
             else:
                 return jsonify({"reply": f"Image gen failed: {response.status_code} {response.text}", "is_image": False})
