@@ -98,6 +98,22 @@
     align-items: center;
     justify-content: center;
     z-index: 10; 
+            position: relative; /* so the slider can position itself INSIDE the taskbar */
+    display: flex;
+        }
+        .slider {
+            position: absolute;
+    top: 0;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    transition: left 0.3s ease, width 0.3s ease; /* THIS is the actual "sliding" effect */
+    z-index: 0;
+        }
+        .taskbar-object {
+            position: relative;
+    z-index: 1; /* keeps the text above the slider so it's not hidden underneath */
+    padding: 10px 20px;
         }
     </style>
 </head>
@@ -108,10 +124,11 @@
     <div class="moving-circle-3"></div>
   </div>
     <div class="taskbar">
+        <div class="slider"></div>
         <table>
             <tr>
-                <td><a href="game.html"><img src="gamepad.png">Games</a></td>
-                <td><a href="AI.html"><img src="Robo.png">AeroAI</a></td>
+                <td class="taskbar-object"><a href="game.html"><img src="gamepad.png">Games</a></td>
+                <td class="taskbar-object"><a href="AI.html"><img src="Robo.png">AeroAI</a></td>
             </tr>
         </table>
     </div>
