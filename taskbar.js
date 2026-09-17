@@ -1,14 +1,9 @@
-const tabs = document.querySelectorAll('.taskbar-object');
-const slider = document.getElementById('slider');
+const highlight = document.querySelector(".table-highlight");
+const cells = document.querySelectorAll("td");
 
-function moveSliderTo(taskbar-object) {
-    slider.style.left = taskbar-object.offsetLeft + 'px';
-    slider.style.width = taskbar-object.offsetWidth + 'px';
-}
-
-tabs.forEach(taskbar-object => {
-    taskbar-object.addEventListener('click', () => moveSliderTo(taskbar-object));
+cells.forEach(cell => {
+  cell.addEventListener("mouseenter", () => {
+    highlight.style.left = `${cell.offsetLeft + 4}px`;
+    highlight.style.width = `${cell.offsetWidth}px`;
+  });
 });
-
-// Optional: put the slider under the first tab as soon as the page loads
-window.addEventListener('load', () => moveSliderTo(tabs[0]));
