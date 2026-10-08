@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>VeryfunandEducationalMathWebsite</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Agdasima:wght@400;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <script src="groq-website/taskbar.js" defer></script>
+        <style>
+          :root { --vh: 1dvh; }
+            h2 {
+                color:orangered;
+                font-family: "Agdasima", sans-serif;
+                font-size:x-large;
+                text-align: center;
+            }
+            h1 {
+                color:orangered;
+                font-family: "Agdasima", sans-serif;
+            }
+            .pic {
+                width:250px;
+            }
+            .pic2 {
+                width:185px;
+                margin-right: 20px;
+                margin-left:20px;
+            }
+            table {
+                margin-right: auto;
+                border-spacing: 20px;
+            }
+             body {
+              width: 100vw;
+              height: 100dvh;
+              margin: 0;
+              font-family: sans-serif;
+              background-color: #fff;
+              overflow: hidden;
+              padding: 0;
+              box-sizing: border-box;
+            }
+            .moving-circle-1 {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: linear-gradient(45deg, #000080, #000000); /* Colorful gradient */
+  border-radius: 50%; /* Makes it a circle */
+  filter: blur(80px); /* Softens the edges for an ambient glow */
+  opacity: 0.6;
+  
+  /* Animation: name | duration | timing-function | iteration-count */
+  animation: floatAround1 12s ease-in-out infinite alternate;
+}.moving-circle-2 {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: linear-gradient(45deg, #000080, #000000); /* Colorful gradient */
+  border-radius: 50%; /* Makes it a circle */
+  filter: blur(80px); /* Softens the edges for an ambient glow */
+  opacity: 0.6;
+  
+  /* Animation: name | duration | timing-function | iteration-count */
+  animation: floatAround2 12s ease-in-out infinite alternate;
+}.moving-circle-3 {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: linear-gradient(45deg, #000080, #000000); /* Colorful gradient */
+  border-radius: 50%; /* Makes it a circle */
+  filter: blur(80px); /* Softens the edges for an ambient glow */
+  opacity: 0.6;
+  
+  /* Animation: name | duration | timing-function | iteration-count */
+  animation: floatAround3 12s ease-in-out infinite alternate;
+}
+
+/* Smooth drifting motion path */
+@keyframes floatAround1 {
+  0% {
+    transform: translate(10vw, 10vh);
+  }
+  50% {
+    transform: translate(50vw, 40vh) scale(1.2); /* Moves and grows slightly */
+  }
+  100% {
+    transform: translate(20vw, 60vh);
+  }
+}
+@keyframes floatAround2 {
+  0% { transform: translate(40vw, 60vh); }
+  50% { transform: translate(10vw, 30vh) scale(1.2); }
+  100% { transform: translate(20vw, 80vh); }
+}
+
+@keyframes floatAround3 {
+  0% { transform: translate(80vw, 20vh); }
+  50% { transform: translate(30vw, 60vh) scale(1.2); }
+  100% { transform: translate(70vw, 10vh); }
+}
+        .taskbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 45px;
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .taskbar-nav {
+            position: relative;
+            height: 45px;
+        }
+
+        .taskbar table {
+            position: relative;
+            border-collapse: collapse;
+            height: 100%;
+        }
+
+        /* This is the moving pill behind the currently hovered/selected item. */
+        .table-highlight {
+    position: absolute;
+    top: 4px;
+    left: 0;
+    height: calc(100% - 8px);
+
+    width: 0;
+
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.15);
+
+    pointer-events: none;
+    z-index: 0;
+
+    transform: translateX(0);
+
+    transition:
+        transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+        width 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.2s ease;
+}
+
+        .taskbar-object {
+            position: relative;
+            z-index: 1;
+            padding: 0;
+            height: 45px;
+        }
+
+        .taskbar-object a {
+            height: 45px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .taskbar-icon {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .table-highlight {
+                transition: none;
+            }
+        }
+            #main-site {
+              position: fixed;
+              width: 100vw;
+              height: 100dvh;
+              padding: 0;
+              overflow: hidden;
+              background: transparent;
+              z-index: 1;
+              display: none;
+            }
+            iframe {
+              position: absolute;
+              inset: 0;
+              display: block;
+              width: 100%;
+              height: 100%;
+              border: 0;
+            }
+            * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+            /* This styles the lock screen */
+    #login-screen {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(8, 13, 23, 0.38);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: white;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      z-index: 9999;
+      font-family: sans-serif;
+    }
+    /* This completely hides your website content by default */
+    #error { color: red; display: none; margin-top: 15px; }
+    input { font-size: 20px; padding: 5px; text-align: center; width: 120px; }
+    button { font-size: 20px; padding: 5px 15px; margin-left: 10px; cursor: pointer; }
+    body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #020B13;
+  position: relative;
+}
+        </style>
+    </head>
+    <body>
+      <div class="bg-container">
+    <div class="moving-circle-1"></div>
+    <div class="moving-circle-2"></div>
+    <div class="moving-circle-3"></div>
+  </div>
+    <div class="taskbar">
+        <div class="taskbar-nav" id="taskbar-nav">
+            <div class="table-highlight" id="table-highlight" style="transform: translateX(243px); width: 114px; opacity: 0;"></div>
+            <table id="taskbar-table">
+                <tbody><tr>
+                    <td class="taskbar-object"><a href="game.html"><img src="/groq-website/gamepad.png" class="taskbar-icon" alt="">Games</a></td>
+                    <td class="taskbar-object"><a href="groq-website/index.html"><img src="/groq-website/Robo.png" class="taskbar-icon" alt="">AeroAI</a></td>
+                    <td class="taskbar-object"><a href="index.html"><img src="Home.png" class="taskbar-icon" alt="Home">Home</a></td>
+                </tr>
+            </tbody></table>
+        </div>
+    </div>
+        <div class="chat-box">
+    <div class="messages" id="chat-messages"></div>
+    <div class="input-area">
+        <input type="text" id="user-input" placeholder="Hey its me. its AeroAI. Ask me anything!" onkeydown="if(event.key === 'Enter') sendMessage()">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+        <script>
+    let memoryMessages = [];
+
+    async function sendMessage() {
+        const input = document.getElementById('user-input');
+        const text = input.value.trim();
+        if (!text) return;
+
+        appendMessage(text, 'user', false);
+        input.value = '';
+
+        memoryMessages.push({ role: "user", content: text });
+
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ messages: memoryMessages })
+            });
+            
+            const data = await response.json();
+            
+            if (data.reply) {
+                // If it's an image, we display the image but save a text notice in memory
+                if (data.is_image) {
+                    memoryMessages.push({ role: "assistant", content: `[Generated Image: ${data.reply}]` });
+                    appendMessage(data.reply, 'bot', true);
+                } else {
+                    memoryMessages.push({ role: "assistant", content: data.reply });
+                    appendMessage(data.reply, 'bot', false);
+                }
+            } else {
+                appendMessage("Error: Empty response content received.", 'bot', false);
+            }
+        } catch (error) {
+            appendMessage("Error connecting to server. Please try again.", 'bot', false);
+            console.error(error);
+        }
+    }
+
+    // UPDATED FUNCTION: accepts an isImage true/false flag
+    function appendMessage(text, sender, isImage) {
+        const box = document.getElementById('chat-messages');
+        const div = document.createElement('div');
+        div.className = `msg ${sender}`;
+        
+        if (sender === 'bot') {
+            if (isImage) {
+                // Renders a beautiful fluid responsive image block
+                div.innerHTML = `<img src="${text}" alt="AI Generated Image" style="width:100%; border-radius:8px; margin-top:5px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">`;
+            } else if (window.marked && typeof window.marked.parse === 'function') {
+                div.innerHTML = window.marked.parse(text);
+            } else {
+                div.innerText = text;
+            }
+        } else {
+            div.innerText = text;
+        }
+        
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+    }
+  </script>
+  <script src="script.js"></script>
+    </body>
+</html>
