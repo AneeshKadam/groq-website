@@ -86,35 +86,68 @@
   50% { transform: translate(30vw, 60vh) scale(1.2); }
   100% { transform: translate(70vw, 10vh); }
 }
-        .taskbar {
-            position: fixed;
+        .table-container {
+  position: relative;
+  display: inline-block;
+  padding: 4px;
+  border-radius: 20px;
+  background: #111;
+}
+
+table {
+  position: relative;
+  z-index: 2;
+  border-collapse: collapse;
+}
+
+td {
+  position: relative;
+  padding: 10px 20px;
+
+  cursor: pointer;
+  border-radius: 18px;
+  white-space: nowrap;
+
+}
+
+/* The moving purple pill */
+.table-highlight {
+  position: absolute;
+    z-index: 1;
+
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 45px;
-    backdrop-filter: blur(5px);
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 20px;
+
+    width: 0;
+    height: 0;
+
+    border-radius: 18px;
+
+    background: linear-gradient(120deg, #02066F, #0FF0FC);
+
+    transition:
+        left 0.45s cubic-bezier(.4, 0, .2, 1),
+        top 0.45s cubic-bezier(.4, 0, .2, 1),
+        width 0.45s cubic-bezier(.4, 0, .2, 1),
+        height 0.45s cubic-bezier(.4, 0, .2, 1);
+    
+    pointer-events: none;
+}
+        .test {
     display: flex;
     align-items: center;
-    justify-content: center;
-    z-index: 10; 
-            background-color:black;
-        }
-        .slider {
-            position: absolute;
-    top: 0;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    transition: left 0.3s ease, width 0.3s ease; /* THIS is the actual "sliding" effect */
-    z-index: 0;
-        }
-        .taskbar-object {
-            position: relative;
-    z-index: 1; /* keeps the text above the slider so it's not hidden underneath */
-    padding: 10px 20px;
-        }
+    gap: 7px;
+
+    color: #fff;
+    text-decoration: none;
+}
+
+.taskbar-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
     </style>
 </head>
 <body>
@@ -123,14 +156,17 @@
     <div class="moving-circle-2"></div>
     <div class="moving-circle-3"></div>
   </div>
-    <div class="taskbar">
-        <div class="table-highlight"></div>
-        <table>
-            <tr>
-                <td class="taskbar-object"><a href="game.html"><img src="gamepad.png">Games</a></td>
-                <td class="taskbar-object"><a href="AI.html"><img src="Robo.png">AeroAI</a></td>
-            </tr>
-        </table>
+    <div class="table-container">
+          <div class="table-highlight" id="table-highlight"></div>
+            <table>
+                <tr>
+                    <td><a href="../game.html" class="test"><img src="/groq-website/gamepad.png" class="taskbar-icon" alt="">Games</a></td>
+                    <td><a href="index.html" class="test"><img src="/groq-website/Robo.png" class="taskbar-icon" alt="">AeroAI</a></td>
+                    <td><a href="../index.html" class="test"><img src="Home.png" class="taskbar-icon" alt="Home">Home</a></td>
+                    <td><a href="Scramjet-App-main/public/credits.html" class="test"><img src="star.png" class="taskbar-icon" alt="Credits">Credits</a></td>
+                </tr>
+            </table>
+        </div>
     </div>
 <div class="chat-box">
     <div class="messages" id="chat-messages"></div>
