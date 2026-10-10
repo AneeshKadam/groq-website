@@ -7,6 +7,8 @@
         <link href="https://fonts.googleapis.com/css2?family=Agdasima:wght@400;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
         <script src="./taskbar.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js" defer></script>
         <style>
           :root { --vh: 1dvh; }
             h2 {
@@ -152,6 +154,47 @@ td {
   background: #FFF;
   position: relative;
 }
+
+
+/* Render AI Markdown as readable rich content */
+.msg.bot p { margin: 0 0 0.8em; }
+.msg.bot p:last-child { margin-bottom: 0; }
+.msg.bot h1, .msg.bot h2, .msg.bot h3,
+.msg.bot h4, .msg.bot h5, .msg.bot h6 {
+  color: inherit;
+  text-align: left;
+  font-family: inherit;
+  margin: 0.9em 0 0.45em;
+}
+.msg.bot ul, .msg.bot ol { padding-left: 1.6em; margin: 0.5em 0 0.8em; }
+.msg.bot li { margin: 0.25em 0; }
+.msg.bot blockquote {
+  margin: 0.75em 0;
+  padding: 0.2em 0 0.2em 0.9em;
+  border-left: 3px solid #888;
+  opacity: 0.9;
+}
+.msg.bot pre {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 12px;
+  margin: 0.7em 0;
+  border-radius: 8px;
+  background: rgba(127,127,127,0.14);
+}
+.msg.bot code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.92em;
+}
+.msg.bot :not(pre) > code {
+  padding: 0.12em 0.35em;
+  border-radius: 4px;
+  background: rgba(127,127,127,0.16);
+}
+.msg.bot table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; margin: 0.75em 0; }
+.msg.bot th, .msg.bot td { padding: 6px 10px; border: 1px solid rgba(127,127,127,0.45); white-space: normal; cursor: auto; }
+.msg.bot a { overflow-wrap: anywhere; }
+.msg.bot hr { border: 0; border-top: 1px solid rgba(127,127,127,0.4); margin: 0.8em 0; }
 
 /* Keep the conversation inside the viewport while allowing long replies to scroll. */
 .taskbar {
@@ -310,7 +353,10 @@ td {
                 img.loading = 'lazy';
                 div.appendChild(img);
             } else if (window.marked && typeof window.marked.parse === 'function') {
-                div.innerHTML = window.marked.parse(text);
+                const renderedMarkdown = window.marked.parse(text, { gfm: true, breaks: true });
+                div.innerHTML = window.DOMPurify
+                    ? window.DOMPurify.sanitize(renderedMarkdown)
+                    : document.createTextNode(text).textContent;
             } else {
                 div.innerText = text;
             }
