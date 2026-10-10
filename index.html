@@ -354,9 +354,11 @@ td {
                 div.appendChild(img);
             } else if (window.marked && typeof window.marked.parse === 'function') {
                 const renderedMarkdown = window.marked.parse(text, { gfm: true, breaks: true });
-                div.innerHTML = window.DOMPurify
-                    ? window.DOMPurify.sanitize(renderedMarkdown)
-                    : document.createTextNode(text).textContent;
+                if (window.DOMPurify) {
+                    div.innerHTML = window.DOMPurify.sanitize(renderedMarkdown);
+                } else {
+                    div.textContent = text;
+                }
             } else {
                 div.innerText = text;
             }
