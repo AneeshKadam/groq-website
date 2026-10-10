@@ -152,6 +152,82 @@ td {
   background: #FFF;
   position: relative;
 }
+
+/* Keep the conversation inside the viewport while allowing long replies to scroll. */
+.taskbar {
+  flex: 0 0 auto;
+  position: relative;
+  z-index: 5;
+  padding: 12px;
+}
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  width: min(900px, calc(100% - 24px));
+  height: calc(100dvh - 82px);
+  min-height: 0;
+  margin: 0 auto;
+  padding: 12px;
+  gap: 12px;
+}
+.messages {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  overflow-wrap: anywhere;
+  padding: 12px;
+  border-radius: 12px;
+  scrollbar-gutter: stable;
+}
+.msg {
+  max-width: 100%;
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.msg img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.msg.user {
+  margin-left: auto;
+  width: fit-content;
+  max-width: 85%;
+}
+.msg.bot {
+  width: fit-content;
+  max-width: 100%;
+}
+.input-area {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 8px;
+  padding-bottom: max(4px, env(safe-area-inset-bottom));
+}
+.input-area input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #999;
+  border-radius: 10px;
+  font: inherit;
+}
+.input-area button {
+  flex: 0 0 auto;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+@media (max-height: 500px) {
+  .chat-box { height: calc(100dvh - 66px); }
+}
+
         </style>
     </head>
     <body>
@@ -197,6 +273,10 @@ td {
             
             const data = await response.json();
             
+            if (!response.ok && !data.reply) {
+                throw new Error(`Request failed (${response.status})`);
+            }
+
             if (data.reply) {
                 // If it's an image, we display the image but save a text notice in memory
                 if (data.is_image) {
@@ -224,7 +304,11 @@ td {
         if (sender === 'bot') {
             if (isImage) {
                 // Renders a beautiful fluid responsive image block
-                div.innerHTML = `<img src="${text}" alt="AI Generated Image" style="width:100%; border-radius:8px; margin-top:5px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">`;
+                const img = document.createElement('img');
+                img.src = text;
+                img.alt = 'AI-generated image';
+                img.loading = 'lazy';
+                div.appendChild(img);
             } else if (window.marked && typeof window.marked.parse === 'function') {
                 div.innerHTML = window.marked.parse(text);
             } else {
