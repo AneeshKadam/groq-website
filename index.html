@@ -6,7 +6,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Agdasima:wght@400;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-        <script src="groq-website/taskbar.js" defer></script>
+        <script src="./taskbar.js" defer></script>
         <style>
           :root { --vh: 1dvh; }
             h2 {
@@ -99,7 +99,7 @@
   50% { transform: translate(30vw, 60vh) scale(1.2); }
   100% { transform: translate(70vw, 10vh); }
 }
-        .table-container {
+        .taskbar-nav {
   position: relative;
   display: inline-block;
   padding: 4px;
@@ -169,11 +169,11 @@ td {
     transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.td:hover {
+.taskbar-object:hover .test {
     gap: 10px;
 }
 
-.td:hover .taskbar-icon {
+.taskbar-object:hover .taskbar-icon {
     transform: scale(1.12);
 }
             #main-site {
@@ -219,12 +219,12 @@ td {
   </div>
     <div class="taskbar">
         <div class="taskbar-nav" id="taskbar-nav">
-            <div class="table-highlight" id="table-highlight" style="transform: translateX(243px); width: 114px; opacity: 0;"></div>
+            <div class="table-highlight" id="table-highlight" aria-hidden="true"></div>
             <table id="taskbar-table">
                 <tbody><tr>
-                    <td class="taskbar-object"><a href="game.html"><img src="/groq-website/gamepad.png" class="taskbar-icon" alt="">Games</a></td>
-                    <td class="taskbar-object"><a href="groq-website/index.html"><img src="/groq-website/Robo.png" class="taskbar-icon" alt="">AeroAI</a></td>
-                    <td class="taskbar-object"><a href="index.html"><img src="Home.png" class="taskbar-icon" alt="Home">Home</a></td>
+                    <td class="taskbar-object"><a class="test" href="game.html"><img src="./gamepad.png" class="taskbar-icon" alt="">Games</a></td>
+                    <td class="taskbar-object"><a class="test" href="./index.html"><i class="fa-solid fa-robot taskbar-icon" aria-hidden="true"></i>AeroAI</a></td>
+                    <td class="taskbar-object"><a class="test" href="./index.html"><i class="fa-solid fa-house taskbar-icon" aria-hidden="true"></i>Home</a></td>
                 </tr>
             </tbody></table>
         </div>
@@ -299,6 +299,5 @@ td {
         box.scrollTop = box.scrollHeight;
     }
   </script>
-  <script src="script.js"></script>
     </body>
 </html>
