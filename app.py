@@ -19,10 +19,16 @@ def home():
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
-    user_data = request.json
+    user_data = request.get_json(silent=True) or {}
     chat_history = user_data.get("messages", [])
-    
-    last_user_message = chat_history[-1]["content"] if chat_history else ""
+
+    if not isinstance(chat_history, list) or not chat_history:
+        return jsonify({"reply": "Please send a message and try again.", "is_image": False}), 400
+
+    if not all(isinstance(message, dict) and message.get("role") in ("user", "assistant", "system") and isinstance(message.get("content"), str) for message in chat_history):
+        return jsonify({"reply": "The chat history format is invalid.", "is_image": False}), 400
+
+    last_user_message = next((message["content"] for message in reversed(chat_history) if message.get("role") == "user"), "")
     msg_lower = last_user_message.lower()
 
     keywords = ["generate an image of", "generate image of", "generate an image", "generate image", "create an image of", "create an image", "picture of", "draw a", "draw"]
@@ -49,16 +55,25 @@ def chat():
                 "Content-Type": "application/json"
             }
 
-            response = requests.post(CF_API_URL, headers=headers, json={"prompt": clean_prompt})
+            response = requests.post(
+                CF_API_URL,
+                headers=headers,
+                json={"prompt": clean_prompt},
+                timeout=90,
+            )
 
-            if response.status_code == 200:
+            if response.ok:
                 result = response.json()
-                # Cloudflare wraps the actual output inside a "result" object
-                base64_image = result["result"]["image"]
-                image_data_url = f"data:image/jpeg;base64,{base64_image}"
-                return jsonify({"reply": image_data_url, "is_image": True})
-            else:
-                return jsonify({"reply": f"Image gen failed: {response.status_code} {response.text}", "is_image": False})
+                base64_image = result.get("result", {}).get("image")
+                if base64_image:
+                    image_data_url = f"data:image/jpeg;base64,{base64_image}"
+                    return jsonify({"reply": image_data_url, "is_image": True})
+
+            app.logger.error("Cloudflare image generation failed with status %s", response.status_code)
+            return jsonify({
+                "reply": "Image generation failed. Check the Cloudflare API settings and server logs, then try again.",
+                "is_image": False
+            }), 502
 
         except Exception as e:
             return jsonify({"reply": f"Image Generation Error: {str(e)}"}), 500
@@ -73,11 +88,17 @@ def chat():
                 messages=chat_history,
                 temperature=0.7,
             )
-            reply_text = completion.choices[0].message.content
+            reply_text = completion.choices[0].message.content or ""
+            if not reply_text:
+                return jsonify({"reply": "The AI returned an empty response. Please try again.", "is_image": False}), 502
             return jsonify({"reply": reply_text, "is_image": False})
 
-        except Exception as e:
-            return jsonify({"reply": f"Chat Error: {str(e)}", "is_image": False}), 500
+        except Exception:
+            app.logger.exception("Groq chat request failed")
+            return jsonify({
+                "reply": "Chat failed. Check the server logs and API configuration, then try again.",
+                "is_image": False
+            }), 502
 
 
 if __name__ == '__main__':
