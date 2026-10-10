@@ -99,88 +99,83 @@
   50% { transform: translate(30vw, 60vh) scale(1.2); }
   100% { transform: translate(70vw, 10vh); }
 }
-        .taskbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 45px;
-            background: rgba(0, 0, 0, 0.72);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-        }
-
-        .taskbar-nav {
-            position: relative;
-            height: 45px;
-        }
-
-        .taskbar table {
-            position: relative;
-            border-collapse: collapse;
-            height: 100%;
-        }
-
-        /* This is the moving pill behind the currently hovered/selected item. */
-        .table-highlight {
-    position: absolute;
-    top: 4px;
-    left: 0;
-    height: calc(100% - 8px);
-
-    width: 0;
-
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.15);
-
-    pointer-events: none;
-    z-index: 0;
-
-    transform: translateX(0);
-
-    transition:
-        transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-        width 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-        opacity 0.2s ease;
+        .table-container {
+  position: relative;
+  display: inline-block;
+  padding: 4px;
+  border-radius: 20px;
+  background-color: #000;
+  z-index:2;
 }
 
-        .taskbar-object {
-            position: relative;
-            z-index: 1;
-            padding: 0;
-            height: 45px;
-        }
+table {
+  position: relative;
+  z-index: 2;
+  border-collapse: collapse;
+}
 
-        .taskbar-object a {
-            height: 45px;
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 7px;
-            color: white;
-            text-decoration: none;
-            border-radius: 12px;
-            position: relative;
-            z-index: 2;
-        }
+td {
+  position: relative;
+  padding: 10px 20px;
 
-        .taskbar-icon {
-            width: 24px;
-            height: 24px;
-            object-fit: contain;
-        }
+  cursor: pointer;
+  border-radius: 18px;
+  white-space: nowrap;
 
-        @media (prefers-reduced-motion: reduce) {
-            .table-highlight {
-                transition: none;
-            }
-        }
+}
+
+/* The moving purple pill */
+.table-highlight {
+  position: absolute;
+    z-index: 1;
+
+    top: 0;
+    left: 0;
+
+    width: 0;
+    height: 0;
+
+    border-radius: 18px;
+
+    background: linear-gradient(120deg, #02066F, #0FF0FC);
+
+    transition:
+        left 0.6s cubic-bezier(.22, 1, 0.36, 1),
+        top 0.6s cubic-bezier(.22, 1, 0.36, 1),
+        width 0.6s cubic-bezier(.22, 1, 0.36, 1),
+        height 0.6s cubic-bezier(.22, 1, 0.36, 1);
+    
+    pointer-events: none;
+}
+.test {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    color: #fff;
+    text-decoration: none;
+
+    transition:
+        color 0.3s ease,
+        gap 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.taskbar-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    flex-shrink: 0;
+
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.td:hover {
+    gap: 10px;
+}
+
+.td:hover .taskbar-icon {
+    transform: scale(1.12);
+}
             #main-site {
               position: fixed;
               width: 100vw;
@@ -204,23 +199,7 @@
   padding: 0;
   box-sizing: border-box;
 }
-            /* This styles the lock screen */
-    #login-screen {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(8, 13, 23, 0.38);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      color: white;
-      display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
-      z-index: 9999;
-      font-family: sans-serif;
-    }
-    /* This completely hides your website content by default */
-    #error { color: red; display: none; margin-top: 15px; }
-    input { font-size: 20px; padding: 5px; text-align: center; width: 120px; }
-    button { font-size: 20px; padding: 5px 15px; margin-left: 10px; cursor: pointer; }
+            
     body, html {
   margin: 0;
   padding: 0;
