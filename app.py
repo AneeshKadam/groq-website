@@ -31,13 +31,26 @@ def chat():
     last_user_message = next((message["content"] for message in reversed(chat_history) if message.get("role") == "user"), "")
     msg_lower = last_user_message.lower()
 
-    keywords = ["generate an image of", "generate image of", "generate an image", "generate image", "create an image of", "create an image", "picture of", "draw a", "draw"]
-    if any(kw in msg_lower for kw in keywords):
+    image_intent = (
+        re.search(r"\b(generate|create|make)\b.{0,60}\b(image|picture|photo|illustration|artwork)\b", last_user_message, re.I)
+        or re.search(r"\b(draw|paint)\b(?:\s+me)?\s+(?:an?\s+)?", last_user_message, re.I)
+        or re.search(r"\b(picture|image|photo)\s+of\b", last_user_message, re.I)
+    )
+    if image_intent:
         try:
-            clean_prompt = msg_lower
-            for kw in keywords:
-                clean_prompt = clean_prompt.replace(kw, "", 1)
-            clean_prompt = clean_prompt.strip()
+            # Keep the user's original capitalization and wording in the prompt.
+            clean_prompt = re.sub(
+                r"^\s*(please\s+)?(generate|create|make)\s+(me\s+)?(an?\s+)?(image|picture|photo|illustration|artwork)\s*(of)?\s*",
+                "",
+                last_user_message,
+                flags=re.I,
+            )
+            clean_prompt = re.sub(
+                r"^\s*(please\s+)?(draw|paint)\s+(me\s+)?(an?\s+)?",
+                "",
+                clean_prompt,
+                flags=re.I,
+            ).strip(" \t\n.,!?")
 
             if not clean_prompt:
                 clean_prompt = "cinematic digital painting artwork, highly detailed"
@@ -75,8 +88,12 @@ def chat():
                 "is_image": False
             }), 502
 
-        except Exception as e:
-            return jsonify({"reply": f"Image Generation Error: {str(e)}"}), 500
+        except Exception:
+            app.logger.exception("Cloudflare image generation request failed")
+            return jsonify({
+                "reply": "Image generation failed. Check that the Cloudflare account ID and API token are correct and that the token has permission to run Workers AI models.",
+                "is_image": False
+            }), 502
 
     else:
         try:
