@@ -10,274 +10,238 @@
         <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js" defer></script>
         <style>
-          :root { --vh: 1dvh; }
-            h2 {
-                color:orangered;
-                font-family: "Agdasima", sans-serif;
-                font-size:x-large;
-                text-align: center;
-            }
-            h1 {
-                color:orangered;
-                font-family: "Agdasima", sans-serif;
-            }
-            .pic {
-                width:250px;
-            }
-            .pic2 {
-                width:185px;
-                margin-right: 20px;
-                margin-left:20px;
-            }
-            table {
-                margin-right: auto;
-                border-spacing: 20px;
-            }
-             body {
-              width: 100vw;
-              height: 100dvh;
-              margin: 0;
-              font-family: sans-serif;
-              background-color: #fff;
-              overflow: hidden;
-              padding: 0;
-              box-sizing: border-box;
-            }
-            
-        .taskbar-nav {
-  position: relative;
-  display: inline-block;
-  padding: 4px;
-  border-radius: 20px;
-  background-color: #000;
-  z-index:2;
+          
+:root {
+    --navy: #1B262C;
+    --blue: #0F4C75;
+    --blue-light: #3282B8;
+    --ice-blue: #BBE1FA;
+
+    --background: #1B262C;
+    --surface: #24343D;
+    --surface-hover: #2C404B;
+    --text: #EAF4FA;
+    --text-muted: #9FB5C2;
+    --border: #354852;
+
+    --radius: 14px;
 }
 
-table {
-  position: relative;
-  z-index: 2;
-  border-collapse: collapse;
+/* Main page */
+html,
+body {
+    background: var(--background);
+    color: var(--text);
+    font-family: Inter, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
 }
 
-td {
-  position: relative;
-  padding: 10px 20px;
-
-  cursor: pointer;
-  border-radius: 18px;
-  white-space: nowrap;
-
+/* Chat container */
+.chat-box {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background: var(--background);
+    border: none;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: none;
 }
 
-/* The moving purple pill */
-.table-highlight {
-  position: absolute;
-    z-index: 1;
-
-    top: 0;
-    left: 0;
-
-    width: 0;
-    height: 0;
-
-    border-radius: 18px;
-
-    background: linear-gradient(120deg, #02066F, #0FF0FC);
-
-    transition:
-        left 0.6s cubic-bezier(.22, 1, 0.36, 1),
-        top 0.6s cubic-bezier(.22, 1, 0.36, 1),
-        width 0.6s cubic-bezier(.22, 1, 0.36, 1),
-        height 0.6s cubic-bezier(.22, 1, 0.36, 1);
-    
-    pointer-events: none;
+/* Messages area */
+.messages {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    padding: 24px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    overflow-wrap: anywhere;
+    scrollbar-gutter: stable;
+    scrollbar-color: var(--blue-light) transparent;
 }
-.test {
+
+/* Shared message styling */
+.msg {
+    width: fit-content;
+    max-width: 85%;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+    animation: message-enter 180ms ease-out;
+}
+
+/* User messages */
+.msg.user {
+    background: var(--blue);
+    color: #FFFFFF;
+    border: none;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+}
+
+/* AI messages */
+.msg.bot {
+    background: var(--surface);
+    color: var(--text);
+    border: none;
+    margin-right: auto;
+    border-bottom-left-radius: 4px;
+}
+
+/* Links inside AI responses */
+.msg.bot a {
+    color: var(--ice-blue);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Code blocks in AI responses */
+.msg.bot pre {
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 14px;
+    margin: 12px 0;
+    background: var(--navy);
+    color: var(--ice-blue);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.msg.bot code {
+    overflow-wrap: anywhere;
+}
+
+.msg.bot p {
+    margin-bottom: 10px;
+}
+
+.msg.bot p:last-child {
+    margin-bottom: 0;
+}
+
+/* Input area */
+.input-area {
     display: flex;
     align-items: center;
-    gap: 7px;
-
-    color: #fff;
-    text-decoration: none;
-
-    transition:
-        color 0.3s ease,
-        gap 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.taskbar-icon {
-    width: 20px;
-    height: 20px;
-    object-fit: contain;
-    flex-shrink: 0;
-
-    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.taskbar-object:hover .test {
     gap: 10px;
+    padding: 14px 18px;
+    background: var(--background);
+    border-top: 1px solid var(--border);
 }
 
-.taskbar-object:hover .taskbar-icon {
-    transform: scale(1.12);
-}
-            #main-site {
-              position: fixed;
-              width: 100vw;
-              height: 100dvh;
-              padding: 0;
-              overflow: hidden;
-              background: transparent;
-              z-index: 1;
-              display: none;
-            }
-            iframe {
-              position: absolute;
-              inset: 0;
-              display: block;
-              width: 100%;
-              height: 100%;
-              border: 0;
-            }
-            * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-            
-    body, html {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: #FFF;
-  position: relative;
-}
-
-
-/* Render AI Markdown as readable rich content */
-.msg.bot p { margin: 0 0 0.8em; }
-.msg.bot p:last-child { margin-bottom: 0; }
-.msg.bot h1, .msg.bot h2, .msg.bot h3,
-.msg.bot h4, .msg.bot h5, .msg.bot h6 {
-  color: inherit;
-  text-align: left;
-  font-family: inherit;
-  margin: 0.9em 0 0.45em;
-}
-.msg.bot ul, .msg.bot ol { padding-left: 1.6em; margin: 0.5em 0 0.8em; }
-.msg.bot li { margin: 0.25em 0; }
-.msg.bot blockquote {
-  margin: 0.75em 0;
-  padding: 0.2em 0 0.2em 0.9em;
-  border-left: 3px solid #888;
-  opacity: 0.9;
-}
-.msg.bot pre {
-  max-width: 100%;
-  overflow-x: auto;
-  padding: 12px;
-  margin: 0.7em 0;
-  border-radius: 8px;
-  background: rgba(127,127,127,0.14);
-}
-.msg.bot code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.92em;
-}
-.msg.bot :not(pre) > code {
-  padding: 0.12em 0.35em;
-  border-radius: 4px;
-  background: rgba(127,127,127,0.16);
-}
-.msg.bot table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; margin: 0.75em 0; }
-.msg.bot th, .msg.bot td { padding: 6px 10px; border: 1px solid rgba(127,127,127,0.45); white-space: normal; cursor: auto; }
-.msg.bot a { overflow-wrap: anywhere; }
-.msg.bot hr { border: 0; border-top: 1px solid rgba(127,127,127,0.4); margin: 0.8em 0; }
-
-/* Keep the conversation inside the viewport while allowing long replies to scroll. */
-.taskbar {
-  flex: 0 0 auto;
-  position: relative;
-  z-index: 5;
-  padding: 12px;
-}
-.chat-box {
-  display: flex;
-  flex-direction: column;
-  width: min(900px, calc(100% - 24px));
-  height: calc(100dvh - 82px);
-  min-height: 0;
-  margin: 0 auto;
-  padding: 12px;
-  gap: 12px;
-}
-.messages {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  overscroll-behavior: contain;
-  overflow-wrap: anywhere;
-  padding: 12px;
-  border-radius: 12px;
-  scrollbar-gutter: stable;
-    width:100vw;
-}
-.msg {
-  max-width: 100%;
-  margin: 0 0 12px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
-}
-.msg img {
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
-.msg.user {
-  --user-background: #e8e8e8;
-    --user-text-color: #171717;
-    --user-width: 85%;
-
-    background: var(--user-background);
-    color: var(--user-text-color);
-    width: fit-content;
-    max-width: var(--user-width);
-    margin-left: auto;
-}
-.msg.bot {
-  width: fit-content;
-  max-width: 100%;
-}
-.input-area {
-  display: flex;
-  flex: 0 0 auto;
-  gap: 8px;
-  padding-bottom: max(4px, env(safe-area-inset-bottom));
-}
+/* Text input */
 .input-area input {
-  flex: 1 1 auto;
-  min-width: 0;
-  padding: 12px;
-  border: 1px solid #999;
-  border-radius: 10px;
-  font: inherit;
-}
-.input-area button {
-  flex: 0 0 auto;
-  padding: 10px 16px;
-  border: 0;
-  border-radius: 10px;
-  cursor: pointer;
-}
-@media (max-height: 500px) {
-  .chat-box { height: calc(100dvh - 66px); }
+    flex: 1;
+    min-width: 0;
+    padding: 13px 16px;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    outline: none;
+    font: inherit;
+    transition: border-color 160ms ease,
+                background 160ms ease;
 }
 
+.input-area input::placeholder {
+    color: var(--text-muted);
+}
+
+.input-area input:focus {
+    background: var(--surface-hover);
+    border-color: var(--blue-light);
+}
+
+/* Send button */
+.input-area button {
+    flex-shrink: 0;
+    padding: 12px 20px;
+    background: var(--blue);
+    color: #FFFFFF;
+    border: none;
+    border-radius: var(--radius);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 160ms ease,
+                transform 160ms ease;
+}
+
+.input-area button:hover {
+    background: var(--blue-light);
+}
+
+.input-area button:active {
+    transform: scale(0.97);
+}
+
+/* Scrollbar */
+.messages::-webkit-scrollbar {
+    width: 7px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+    background: var(--blue-light);
+    border-radius: 10px;
+}
+
+.messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Simple animation */
+@keyframes message-enter {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Text selection */
+::selection {
+    background: var(--blue-light);
+    color: #FFFFFF;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .messages {
+        padding: 16px;
+    }
+
+    .msg {
+        max-width: 95%;
+    }
+
+    .input-area {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .input-area button {
+        padding: 12px 15px;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
         </style>
     </head>
     <body>
