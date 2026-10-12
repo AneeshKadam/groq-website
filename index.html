@@ -239,14 +239,15 @@ td {
   height: auto;
 }
 .msg.user {
-  background-color:black;
-  max-width: 100%;
-    background: transparent;
-    backdrop-filter: blur(10px);
-    opacity:5px;
-    color:white;
-    border-radius:20px;
-    border-color:gray;
+  --user-background: #e8e8e8;
+    --user-text-color: #171717;
+    --user-width: 85%;
+
+    background: var(--user-background);
+    color: var(--user-text-color);
+    width: fit-content;
+    max-width: var(--user-width);
+    margin-left: auto;
 }
 .msg.bot {
   width: fit-content;
