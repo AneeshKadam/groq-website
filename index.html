@@ -28,18 +28,21 @@
 }
 
 /* Main page */
-html,
 body {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
     background: var(--background);
     color: var(--text);
     font-family: Inter, -apple-system, BlinkMacSystemFont,
         "Segoe UI", sans-serif;
-    width:100%
-    height:100dvh;
-    min-height:100%;
-    margin:0;
-}
 
+}
 /* Chat container */
 .chat-box {
     display: flex;
@@ -54,7 +57,7 @@ body {
 
 /* Messages area */
 .messages {
-    flex: 1 1 auto;
+    flex: 1;
     min-height: 0;
     width: 100%;
     padding: 24px;
@@ -64,7 +67,6 @@ body {
     overflow-wrap: anywhere;
     scrollbar-gutter: stable;
     scrollbar-color: var(--blue-light) transparent;
-    height:100%
 }
 
 /* Shared message styling */
@@ -246,7 +248,10 @@ body {
         animation-duration: 0.01ms !important;
         transition-duration: 0.01ms !important;
     }
-}
+} 
+            * {
+                box-sizing:border-box;
+            }
         </style>
     </head>
     <body>
