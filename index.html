@@ -32,12 +32,13 @@ body {
     min-height: 100dvh;
     display: flex;
     flex-direction: column;
+    background-color:#1B262C;
 }
 html, body {
     width: 100%;
     height: 100%;
     margin: 0;
-    background-color: var(--background);
+    background-color: #1B262C;
     color: var(--text);
     font-family: Inter, -apple-system, BlinkMacSystemFont,
         "Segoe UI", sans-serif;
@@ -85,7 +86,7 @@ html, body {
 
 /* User messages */
 .msg.user {
-    background-color:#0F4C75;
+    background-color:#015AC7;
     color: #FFFFFF;
     border: none;
     margin-left: auto;
@@ -94,8 +95,8 @@ html, body {
 
 /* AI messages */
 .msg.bot {
-    background-color:#0F4C75;
-    color: var(--text);
+    background-color:#28282B;
+    color: #FFFFFF;
     border: none;
     margin-right: auto;
     border-bottom-left-radius: 4px;
@@ -139,7 +140,7 @@ html, body {
     padding: 14px 18px;
     border-top: 1px solid var(--border);
     margin-top:auto;
-    background-color:#3282B8
+    background-color:#1B262C;
 }
 
 /* Text input */
@@ -155,16 +156,16 @@ html, body {
     font: inherit;
     transition: border-color 160ms ease,
                 background 160ms ease;
-    background-color:#000035;
-    color:white;
+    background-color:#555555;
+    color:#FFFFFF;
 }
 
 .input-area input::placeholder {
-    color: var(--text-muted);
+    color: #7D7D7D;
 }
 
 .input-area input:focus {
-    background: var(--surface-hover);
+    background-color:#555555;
     border-color: var(--blue-light);
 }
 
@@ -172,7 +173,7 @@ html, body {
 .input-area button {
     flex-shrink: 0;
     padding: 12px 20px;
-    background: var(--blue);
+    background-color:#015AC7;
     color: #FFFFFF;
     border: none;
     border-radius: var(--radius);
