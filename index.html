@@ -27,7 +27,7 @@
     --radius: 14px;
 }
 
-/* Main page */
+
 body {
     min-height: 100dvh;
     display: flex;
@@ -44,12 +44,12 @@ html, body {
         "Segoe UI", sans-serif;
 
 }
-/* Chat container */
+
 .chat-box {
     display: flex;
     flex-direction: column;
     min-height: 0;
-    background-color:#1A1A1A;
+    background-color:#000000;
     border: none;
     border-radius: var(--radius);
     overflow: hidden;
@@ -57,7 +57,6 @@ html, body {
     flex: 1 1 auto;
 }
 
-/* Messages area */
 .messages {
     flex: 1;
     min-height: 0;
@@ -69,10 +68,10 @@ html, body {
     overflow-wrap: anywhere;
     scrollbar-gutter: stable;
     scrollbar-color: var(--blue-light) transparent;
-    background-color:#1B262C;
+    background-color:#000000;
 }
 
-/* Shared message styling */
+
 .msg {
     width: fit-content;
     max-width: 85%;
@@ -82,34 +81,37 @@ html, body {
     line-height: 1.65;
     overflow-wrap: anywhere;
     animation: message-enter 180ms ease-out;
+    font-size: 15px;
 }
 
-/* User messages */
+
 .msg.user {
     background-color:#015AC7;
     color: #FFFFFF;
     border: none;
     margin-left: auto;
+    border-radius:16px;
     border-bottom-right-radius: 4px;
 }
 
-/* AI messages */
+
 .msg.bot {
     background-color:#28282B;
     color: #FFFFFF;
     border: none;
     margin-right: auto;
+    border-radius:16px;
     border-bottom-left-radius: 4px;
 }
 
-/* Links inside AI responses */
+
 .msg.bot a {
     color: var(--ice-blue);
     text-decoration: underline;
     text-underline-offset: 3px;
 }
 
-/* Code blocks in AI responses */
+
 .msg.bot pre {
     max-width: 100%;
     overflow-x: auto;
@@ -132,7 +134,7 @@ html, body {
 .msg.bot p:last-child {
     margin-bottom: 0;
 }
-/* Input area */
+
 .input-area {
     display: flex;
     align-items: center;
@@ -143,7 +145,7 @@ html, body {
     background-color:#1B262C;
 }
 
-/* Text input */
+
 .input-area input {
     flex: 1;
     min-width: 0;
@@ -169,7 +171,7 @@ html, body {
     border-color: var(--blue-light);
 }
 
-/* Send button */
+
 .input-area button {
     flex-shrink: 0;
     padding: 12px 20px;
@@ -192,7 +194,7 @@ html, body {
     transform: scale(0.97);
 }
 
-/* Scrollbar */
+
 .messages::-webkit-scrollbar {
     width: 7px;
 }
@@ -206,7 +208,7 @@ html, body {
     background: transparent;
 }
 
-/* Simple animation */
+
 @keyframes message-enter {
     from {
         opacity: 0;
@@ -219,7 +221,7 @@ html, body {
     }
 }
 
-/* Text selection */
+
 ::selection {
     background: var(--blue-light);
     color: #FFFFFF;
@@ -265,7 +267,7 @@ html, body {
         <div class="chat-box">
     <div class="messages" id="chat-messages"></div>
     <div class="input-area">
-        <input type="text" id="user-input" placeholder="Hey its me. its AeroAI. Ask me anything!" onkeydown="if(event.key === 'Enter') sendMessage()">
+        <input type="text" id="user-input" placeholder="Talk to AeroAI." onkeydown="if(event.key === 'Enter') sendMessage()">
         <button onclick="sendMessage()">Send</button>
     </div>
 </div>
@@ -273,78 +275,108 @@ html, body {
         <script>
     let memoryMessages = [];
 
-    async function sendMessage() {
-        const input = document.getElementById('user-input');
-        const text = input.value.trim();
-        if (!text) return;
+async function sendMessage() {
+    const input = document.getElementById('user-input');
+    const text = input.value.trim();
+    if (!text) return;
 
-        appendMessage(text, 'user', false);
-        input.value = '';
+    appendMessage(text, 'user', false);
+    input.value = '';
 
-        memoryMessages.push({ role: "user", content: text });
+    memoryMessages.push({ role: "user", content: text });
 
-        try {
-            const response = await fetch('/api/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ messages: memoryMessages })
-            });
-            
-            const data = await response.json();
-            
-            if (!response.ok && !data.reply) {
-                throw new Error(`Request failed (${response.status})`);
-            }
-
-            if (data.reply) {
-                // If it's an image, we display the image but save a text notice in memory
-                if (data.is_image) {
-                    memoryMessages.push({ role: "assistant", content: `[Generated Image: ${data.reply}]` });
-                    appendMessage(data.reply, 'bot', true);
-                } else {
-                    memoryMessages.push({ role: "assistant", content: data.reply });
-                    appendMessage(data.reply, 'bot', false);
-                }
-            } else {
-                appendMessage("Error: Empty response content received.", 'bot', false);
-            }
-        } catch (error) {
-            appendMessage("Error connecting to server. Please try again.", 'bot', false);
-            console.error(error);
-        }
-    }
-
-    // UPDATED FUNCTION: accepts an isImage true/false flag
-    function appendMessage(text, sender, isImage) {
-        const box = document.getElementById('chat-messages');
-        const div = document.createElement('div');
-        div.className = `msg ${sender}`;
+    try {
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ messages: memoryMessages })
+        });
         
-        if (sender === 'bot') {
-            if (isImage) {
-                // Renders a beautiful fluid responsive image block
-                const img = document.createElement('img');
-                img.src = text;
-                img.alt = 'AI-generated image';
-                img.loading = 'lazy';
-                div.appendChild(img);
-            } else if (window.marked && typeof window.marked.parse === 'function') {
-                const renderedMarkdown = window.marked.parse(text, { gfm: true, breaks: true });
-                if (window.DOMPurify) {
-                    div.innerHTML = window.DOMPurify.sanitize(renderedMarkdown);
-                } else {
-                    div.textContent = text;
-                }
-            } else {
-                div.innerText = text;
-            }
+        if (!response.ok) {
+            throw new Error(`Request failed (${response.status})`);
+        }
+
+        // 1. Create a placeholder bubble for the incoming bot stream
+        const botBubble = createEmptyBotBubble();
+        let fullAccumulatedText = "";
+
+        // 2. Setup standard web stream reader
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+
+        while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+
+            // Decode the modern byte chunk into strings
+            const chunk = decoder.decode(value, { stream: true });
+            
+            // Your backend should send format "data: text\n\n" or simple text data
+            // Here we assume a raw text stream chunk. Adjust parsing if using SSE strings.
+            fullAccumulatedText += chunk;
+
+            // 3. Render the parsed markdown dynamically as it grows
+            updateBotBubble(botBubble, fullAccumulatedText);
+        }
+
+        // Save the final completed message string back into the conversation state
+        memoryMessages.push({ role: "assistant", content: fullAccumulatedText });
+
+    } catch (error) {
+        appendMessage("Error connecting to server. Please try again.", 'bot', false);
+        console.error(error);
+    }
+}
+
+// Generates the initial empty DOM container wrapper for the bot
+function createEmptyBotBubble() {
+    const box = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+    return div;
+}
+
+// Updates an existing block directly with fresh decoded strings
+function updateBotBubble(element, text) {
+    const box = document.getElementById('chat-messages');
+    
+    if (window.marked && typeof window.marked.parse === 'function') {
+        const renderedMarkdown = window.marked.parse(text, { gfm: true, breaks: true });
+        if (window.DOMPurify) {
+            element.innerHTML = window.DOMPurify.sanitize(renderedMarkdown);
         } else {
-            div.innerText = text;
+            element.textContent = text;
         }
-        
-        box.appendChild(div);
-        box.scrollTop = box.scrollHeight;
+    } else {
+        element.innerText = text;
     }
+    
+    // Smooth lock to bottom view as typing runs down the card
+    box.scrollTop = box.scrollHeight;
+}
+
+// Kept your legacy code for non-streaming / User prints
+function appendMessage(text, sender, isImage) {
+    const box = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.className = `msg ${sender}`;
+    
+    if (sender === 'bot' && isImage) {
+        const img = document.createElement('img');
+        img.src = text;
+        img.alt = 'AI-generated image';
+        img.loading = 'lazy';
+        div.appendChild(img);
+    } else {
+        div.innerText = text;
+    }
+    
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+}
+
   </script>
     </body>
 </html>
