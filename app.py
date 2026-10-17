@@ -1,8 +1,9 @@
 import os
 import re
 import base64
+import json
 import requests
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, Response
 from dotenv import load_dotenv
 from groq import Groq
 
@@ -30,16 +31,15 @@ def chat():
         return jsonify({"reply": "The chat history format is invalid.", "is_image": False}), 400
 
     last_user_message = next((message["content"] for message in reversed(chat_history) if message.get("role") == "user"), "")
-    msg_lower = last_user_message.lower()
 
     image_intent = (
         re.search(r"\b(generate|create|make)\b.{0,60}\b(image|picture|photo|illustration|artwork)\b", last_user_message, re.I)
         or re.search(r"\b(draw|paint)\b(?:\s+me)?\s+(?:an?\s+)?", last_user_message, re.I)
         or re.search(r"\b(picture|image|photo)\s+of\b", last_user_message, re.I)
     )
+    
     if image_intent:
         try:
-            # Keep the user's original capitalization and wording in the prompt.
             clean_prompt = re.sub(
                 r"^\s*(please\s+)?(generate|create|make)\s+(me\s+)?(an?\s+)?(image|picture|photo|illustration|artwork)\s*(of)?\s*",
                 "",
@@ -81,6 +81,7 @@ def chat():
                 base64_image = result.get("result", {}).get("image")
                 if base64_image:
                     image_data_url = f"data:image/jpeg;base64,{base64_image}"
+                    # Wrap image inside a small text signature so the frontend knows it is a JSON package
                     return jsonify({"reply": image_data_url, "is_image": True})
 
             app.logger.error("Cloudflare image generation failed with status %s", response.status_code)
@@ -92,27 +93,31 @@ def chat():
         except Exception:
             app.logger.exception("Cloudflare image generation request failed")
             return jsonify({
-                "reply": "Image generation failed. Check that the Cloudflare account ID and API token are correct and that the token has permission to run Workers AI models.",
+                "reply": "Image generation failed. Check details on server configuration logs.",
                 "is_image": False
             }), 502
 
     else:
-        try:
-            if client is None:
-                return jsonify({"reply": "Error: GROQ_API_KEY is not set on the server.", "is_image": False}), 500
+        # --- STREAMING CHAT COMPLETION ---
+        if client is None:
+            return jsonify({"reply": "Error: GROQ_API_KEY is not set on the server.", "is_image": False}), 500
 
-            completion = client.chat.completions.create(
-                model="openai/gpt-oss-120b",
-                messages=chat_history,
-                temperature=0.7,
-            )
-            reply_text = completion.choices[0].message.content or ""
-            if not reply_text:
-                return jsonify({"reply": "The AI returned an empty response. Please try again.", "is_image": False}), 502
-            return jsonify({"reply": reply_text, "is_image": False})
+        try:
+            def generate_stream():
+                completion = client.chat.completions.create(
+                    model="openai/gpt-oss-120b",
+                    messages=chat_history,
+                    temperature=0.7,
+                    stream=True  # Activates the streaming loop on Groq
+                )
+                for chunk in completion:
+                    if chunk.choices and chunk.choices[0].delta.content:
+                        yield chunk.choices[0].delta.content
+
+            return Response(generate_stream(), mimetype='text/plain')
 
         except Exception:
-            app.logger.exception("Groq chat request failed")
+            app.logger.exception("Groq chat streaming request failed")
             return jsonify({
                 "reply": "Chat failed. Check the server logs and API configuration, then try again.",
                 "is_image": False
@@ -122,3 +127,4 @@ def chat():
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
