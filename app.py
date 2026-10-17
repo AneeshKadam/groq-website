@@ -104,7 +104,7 @@ def chat():
 
         try:
             def generate_stream():
-                system_message = {
+    system_message = {
         "role": "system",
         "content": (
             "Answer in plain, simple language. Start with the direct answer. "
@@ -119,16 +119,16 @@ def chat():
         if message.get("role") != "system"
     ]
 
-                completion = client.chat.completions.create(
-                    model="openai/gpt-oss-120b",
-                    messages=chat_history,
-                    temperature=0.7,
-                    stream=True  # Activates the streaming loop on Groq
-                )
-                for chunk in completion:
-                    if chunk.choices and chunk.choices[0].delta.content:
-                        yield chunk.choices[0].delta.content
-
+    completion = client.chat.completions.create(
+        model="openai/gpt-oss-120b",
+        messages=messages,
+        temperature=0.7,
+        max_tokens=250,
+        stream=True
+    )
+    for chunk in completion:
+        if chunk.choices and chunk.choices[0].delta.content:
+            yield chunk.choices[0].delta.content
             return Response(generate_stream(), mimetype='text/plain')
 
         except Exception:
