@@ -118,7 +118,7 @@ def chat():
                     model="openai/gpt-oss-120b",
                     messages=messages,
                     temperature=0.7,
-                    max_tokens=250,
+                    max_tokens=500,
                     stream=True
                 )
             
