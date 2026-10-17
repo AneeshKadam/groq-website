@@ -104,6 +104,21 @@ def chat():
 
         try:
             def generate_stream():
+                system_message = {
+        "role": "system",
+        "content": (
+            "Answer in plain, simple language. Start with the direct answer. "
+            "Keep replies under 100 words unless the user asks for more detail. "
+            "Use short paragraphs or bullets when helpful. Explain unfamiliar terms. "
+            "Don't repeat the question or add unrelated advice. If unsure, say so briefly."
+        )
+    }
+
+    messages = [system_message] + [
+        message for message in chat_history
+        if message.get("role") != "system"
+    ]
+
                 completion = client.chat.completions.create(
                     model="openai/gpt-oss-120b",
                     messages=chat_history,
