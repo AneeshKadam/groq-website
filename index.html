@@ -1,11 +1,13 @@
+
+
+Whole Index.html
 <!DOCTYPE html>
 <html>
     <head>
         <title>VeryfunandEducationalMathWebsite</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <!-- Corrected Google Fonts implementation for Geist + Geist Mono -->
-        <link href="https://googleapis.com" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://googleapis.com" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
         <script src="./taskbar.js" defer></script>
         <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
@@ -18,128 +20,100 @@
     --blue-light: #3282B8;
     --ice-blue: #BBE1FA;
 
-    --background: #0b1114; 
-    --surface: rgba(36, 52, 61, 0.4); 
-    --surface-hover: rgba(44, 64, 75, 0.6);
+    --background: #1B262C;
+    --surface: #24343D;
+    --surface-hover: #2C404B;
     --text: #EAF4FA;
     --text-muted: #9FB5C2;
-    --border: rgba(255, 255, 255, 0.08); 
+    --border: #354852;
 
-    --radius: 16px;
+    --radius: 14px;
 }
+
 
 body {
     min-height: 100dvh;
     display: flex;
     flex-direction: column;
-    background-color: var(--background);
-    background-image: 
-        radial-gradient(circle at 80% 20%, rgba(15, 76, 117, 0.3) 0%, transparent 40%),
-        radial-gradient(circle at 10% 80%, rgba(50, 130, 184, 0.2) 0%, transparent 40%);
-    background-attachment: fixed;
+    background-color:#1B262C;
 }
-
 html, body {
     width: 100%;
     height: 100%;
     margin: 0;
+    background-color: #1B262C;
     color: var(--text);
-    font-family: 'Geist', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    letter-spacing: -0.01em;
+    font-family: Inter, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+
 }
 
 .chat-box {
     display: flex;
     flex-direction: column;
     min-height: 0;
-    max-width: 900px; 
-    width: 100%;
-    margin: 20px auto; 
+    background-color:#000000;
+    border: none;
     border-radius: var(--radius);
     overflow: hidden;
+    box-shadow: none;
     flex: 1 1 auto;
-    
-    background: rgba(16, 24, 30, 0.65); 
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
 }
 
 .messages {
     flex: 1;
     min-height: 0;
     width: 100%;
-    padding: 28px;
+    padding: 24px;
     overflow-y: auto;
     overflow-x: hidden;
     overscroll-behavior: contain;
     overflow-wrap: anywhere;
     scrollbar-gutter: stable;
     scrollbar-color: var(--blue-light) transparent;
-    background: transparent; 
+    background-color:#000000;
 }
 
-/* Wrapper to position avatar and AI bubble side-by-side */
-.bot-message-wrapper {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 16px;
-    max-width: 85%;
-    animation: message-enter 180ms ease-out;
-}
-
-.ai-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--blue), var(--blue-light));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #FFFFFF;
-    font-size: 14px;
-    flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(50, 130, 184, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-}
 
 .msg {
     width: fit-content;
-    line-height: 1.65;
-    overflow-wrap: anywhere;
-    font-size: 15px;
-    padding: 12px 16px;
-}
-
-.msg.user {
     max-width: 85%;
     margin-bottom: 16px;
-    background-color: #015AC7;
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+    animation: message-enter 180ms ease-out;
+    font-size: 15px;
+}
+
+
+.msg.user {
+    background-color:#015AC7;
     color: #FFFFFF;
     border: none;
     margin-left: auto;
-    border-radius: 16px;
+    border-radius:16px;
     border-bottom-right-radius: 4px;
-    box-shadow: 0 4px 15px rgba(1, 90, 199, 0.2);
-    animation: message-enter 180ms ease-out;
 }
 
+
 .msg.bot {
-    background: rgba(255, 255, 255, 0.05);
+    background-color:#28282B;
     color: #FFFFFF;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: none;
     margin-right: auto;
-    border-radius: 16px;
+    border-radius:16px;
     border-bottom-left-radius: 4px;
 }
+
 
 .msg.bot a {
     color: var(--ice-blue);
     text-decoration: underline;
     text-underline-offset: 3px;
 }
+
 
 .msg.bot pre {
     max-width: 100%;
@@ -150,11 +124,9 @@ html, body {
     color: var(--ice-blue);
     border: 1px solid var(--border);
     border-radius: 10px;
-    font-family: 'Geist Mono', monospace;
 }
 
 .msg.bot code {
-    font-family: 'Geist Mono', monospace;
     overflow-wrap: anywhere;
 }
 
@@ -172,21 +144,25 @@ html, body {
     gap: 10px;
     padding: 14px 18px;
     border-top: 1px solid var(--border);
-    margin-top: auto;
-    background-color: #1B262C;
+    margin-top:auto;
+    background-color:#1B262C;
 }
+
 
 .input-area input {
     flex: 1;
     min-width: 0;
     padding: 13px 16px;
-    outline: none;
-    font: inherit;
-    transition: border-color 160ms ease, background 160ms ease;
-    background-color: #555555;
-    color: #FFFFFF;
+    background: var(--surface);
+    color: var(--text);
     border: 1px solid transparent;
     border-radius: var(--radius);
+    outline: none;
+    font: inherit;
+    transition: border-color 160ms ease,
+                background 160ms ease;
+    background-color:#555555;
+    color:#FFFFFF;
 }
 
 .input-area input::placeholder {
@@ -194,21 +170,23 @@ html, body {
 }
 
 .input-area input:focus {
-    background-color: #555555;
+    background-color:#555555;
     border-color: var(--blue-light);
 }
+
 
 .input-area button {
     flex-shrink: 0;
     padding: 12px 20px;
-    background-color: #015AC7;
+    background-color:#015AC7;
     color: #FFFFFF;
     border: none;
     border-radius: var(--radius);
     font: inherit;
     font-weight: 600;
     cursor: pointer;
-    transition: background 160ms ease, transform 160ms ease;
+    transition: background 160ms ease,
+                transform 160ms ease;
 }
 
 .input-area button:hover {
@@ -218,6 +196,7 @@ html, body {
 .input-area button:active {
     transform: scale(0.97);
 }
+
 
 .messages::-webkit-scrollbar {
     width: 7px;
@@ -232,48 +211,58 @@ html, body {
     background: transparent;
 }
 
+
 @keyframes message-enter {
     from {
         opacity: 0;
         transform: translateY(4px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
+
 ::selection {
     background: var(--blue-light);
     color: #FFFFFF;
 }
 
+/* Mobile */
 @media (max-width: 600px) {
     .messages {
         padding: 16px;
     }
+
     .msg {
         max-width: 95%;
     }
+
     .input-area {
         padding: 10px;
         gap: 8px;
     }
+
     .input-area button {
         padding: 12px 15px;
     }
 }
 
+/* Accessibility */
 @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
         animation-duration: 0.01ms !important;
         transition-duration: 0.01ms !important;
     }
 } 
-
-* {
-    box-sizing: border-box;
-}
+            * {
+                box-sizing:border-box;
+            }
+        </style>
     </head>
     <body>
      
@@ -289,104 +278,109 @@ html, body {
         <script>
     let memoryMessages = [];
 
-    // Re-added your exact original message rendering logic for user items
-    function appendMessage(text, sender, isStreaming) {
-        const box = document.getElementById('chat-messages');
-        const div = document.createElement('div');
-        div.className = `msg ${sender}`;
-        div.textContent = text;
-        box.appendChild(div);
-        box.scrollTop = box.scrollHeight;
-    }
+async function sendMessage() {
+    const input = document.getElementById('user-input');
+    const text = input.value.trim();
+    if (!text) return;
 
-    async function sendMessage() {
-        const input = document.getElementById('user-input');
-        const text = input.value.trim();
-        if (!text) return;
+    appendMessage(text, 'user', false);
+    input.value = '';
 
-        // Uses your original functional call signature
-        appendMessage(text, 'user', false);
-        input.value = '';
+    memoryMessages.push({ role: "user", content: text });
 
-        memoryMessages.push({ role: "user", content: text });
-
-        try {
-            const response = await fetch('/api/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ messages: memoryMessages })
-            });
-            
-            if (!response.ok) {
-                throw new Error(`Request failed (${response.status})`);
-            }
-
-            // 1. Generates the new row layout wrapper containing the avatar icon element
-            const botBubble = createEmptyBotBubble();
-            let fullAccumulatedText = "";
-
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder("utf-8");
-
-            while (true) {
-                const { value, done } = await reader.read();
-                if (done) break;
-
-                const chunk = decoder.decode(value, { stream: true });
-                fullAccumulatedText += chunk;
-
-                // 2. Safely parse streaming changes using DOMPurify and Marked libraries
-                updateBotBubble(botBubble, fullAccumulatedText);
-            }
-
-            memoryMessages.push({ role: "assistant", content: fullAccumulatedText });
-
-        } catch (error) {
-            appendMessage("Error connecting to server. Please try again.", 'bot', false);
-            console.error(error);
+    try {
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ messages: memoryMessages })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Request failed (${response.status})`);
         }
+
+        // 1. Create a placeholder bubble for the incoming bot stream
+        const botBubble = createEmptyBotBubble();
+        let fullAccumulatedText = "";
+
+        // 2. Setup standard web stream reader
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+
+        while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+
+            // Decode the modern byte chunk into strings
+            const chunk = decoder.decode(value, { stream: true });
+            
+            // Your backend should send format "data: text\n\n" or simple text data
+            // Here we assume a raw text stream chunk. Adjust parsing if using SSE strings.
+            fullAccumulatedText += chunk;
+
+            // 3. Render the parsed markdown dynamically as it grows
+            updateBotBubble(botBubble, fullAccumulatedText);
+        }
+
+        // Save the final completed message string back into the conversation state
+        memoryMessages.push({ role: "assistant", content: fullAccumulatedText });
+
+    } catch (error) {
+        appendMessage("Error connecting to server. Please try again.", 'bot', false);
+        console.error(error);
     }
+}
 
-    // Creates the side-by-side flex layout block so the avatar displays cleanly alongside the stream bubble
-    function createEmptyBotBubble() {
-        const box = document.getElementById('chat-messages');
-        
-        const wrapper = document.createElement('div');
-        wrapper.className = 'bot-message-wrapper';
-        
-        const avatar = document.createElement('div');
-        avatar.className = 'ai-avatar';
-        avatar.innerHTML = '<i class="fa-solid fa-robot"></i>';
-        
-        const msgBubble = document.createElement('div');
-        msgBubble.className = 'msg bot';
-        
-        wrapper.appendChild(avatar);
-        wrapper.appendChild(msgBubble);
-        box.appendChild(wrapper);
-        
-        box.scrollTop = box.scrollHeight;
-        return msgBubble; 
+// Generates the initial empty DOM container wrapper for the bot
+function createEmptyBotBubble() {
+    const box = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+    return div;
+}
+
+// Updates an existing block directly with fresh decoded strings
+function updateBotBubble(element, text) {
+    const box = document.getElementById('chat-messages');
+    
+    if (window.marked && typeof window.marked.parse === 'function') {
+        const renderedMarkdown = window.marked.parse(text, { gfm: true, breaks: true });
+        if (window.DOMPurify) {
+            element.innerHTML = window.DOMPurify.sanitize(renderedMarkdown);
+        } else {
+            element.textContent = text;
+        }
+    } else {
+        element.innerText = text;
     }
-
-    function updateBotBubble(element, text) {
-        const box = document.getElementById('chat-messages');
-        
-        if (window.marked && typeof window.marked.parse === 'function') {
-            const renderedMarkdown = window.marked.parse(text, { gfm: true, breaks: true });
-            if (window.DOMPurify) {
-                element.innerHTML = window.DOMPurify.sanitize(renderedMarkdown);
-            } else {
-element.textContent = text;
-}
-} else {
-element.textContent = text;
-}
-box.scrollTop = box.scrollHeight;
+    
+    // Smooth lock to bottom view as typing runs down the card
+    box.scrollTop = box.scrollHeight;
 }
 
-
+// Kept your legacy code for non-streaming / User prints
+function appendMessage(text, sender, isImage) {
+    const box = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.className = `msg ${sender}`;
+    
+    if (sender === 'bot' && isImage) {
+        const img = document.createElement('img');
+        img.src = text;
+        img.alt = 'AI-generated image';
+        img.loading = 'lazy';
+        div.appendChild(img);
+    } else {
+        div.innerText = text;
+    }
+    
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+}
 
   </script>
     </body>
 </html>
+
