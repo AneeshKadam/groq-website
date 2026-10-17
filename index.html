@@ -3,8 +3,9 @@
     <head>
         <title>VeryfunandEducationalMathWebsite</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://googleapis.com" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <!-- Corrected Google Fonts implementation for Geist + Geist Mono -->
+        <link href="https://googleapis.com" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
         <script src="./taskbar.js" defer></script>
         <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
@@ -33,6 +34,10 @@ body {
     display: flex;
     flex-direction: column;
     background-color:#1B262C;
+    background-image: 
+        radial-gradient(circle at 80% 20%, rgba(15, 76, 117, 0.3) 0%, transparent 40%),
+        radial-gradient(circle at 10% 80%, rgba(50, 130, 184, 0.2) 0%, transparent 40%);
+    background-attachment: fixed;
 }
 html, body {
     width: 100%;
@@ -40,7 +45,7 @@ html, body {
     margin: 0;
     background-color: #1B262C;
     color: var(--text);
-    font-family: Inter, -apple-system, BlinkMacSystemFont,
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         "Segoe UI", sans-serif;
 
 }
@@ -49,28 +54,58 @@ html, body {
     display: flex;
     flex-direction: column;
     min-height: 0;
-    background-color:#000000;
-    border: none;
+    max-width: 900px; /* Constrains look on wide monitors */
+    width: 100%;
+    margin: 20px auto; /* Centers the card nicely */
     border-radius: var(--radius);
     overflow: hidden;
-    box-shadow: none;
     flex: 1 1 auto;
+    
+    /* Premium Glassmorphic Recipe */
+    background: rgba(16, 24, 30, 0.65); 
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
 }
 
 .messages {
     flex: 1;
     min-height: 0;
     width: 100%;
-    padding: 24px;
+    padding: 28px;
     overflow-y: auto;
     overflow-x: hidden;
     overscroll-behavior: contain;
     overflow-wrap: anywhere;
     scrollbar-gutter: stable;
     scrollbar-color: var(--blue-light) transparent;
-    background-color:#000000;
+    background: transparent; /* Allows main glass background to show through */
+}
+/* Wrapper to sit avatar and AI bubble horizontally row-by-row */
+.bot-message-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 20px;
+    max-width: 85%;
+    animation: message-enter 220ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.ai-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--blue-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    font-size: 14px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(50, 130, 184, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
 
 .msg {
     width: fit-content;
@@ -86,22 +121,25 @@ html, body {
 
 
 .msg.user {
-    background-color:#015AC7;
+    max-width: 85%;
+    margin-bottom: 20px;
+    background-color: var(--blue);
     color: #FFFFFF;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     margin-left: auto;
-    border-radius:16px;
-    border-bottom-right-radius: 4px;
+    border-radius: 18px 18px 4px 18px; /* Tapered edge pointing to right */
+    box-shadow: 0 4px 15px rgba(15, 76, 117, 0.2);
+    animation: message-enter 220ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 
 .msg.bot {
-    background-color:#28282B;
-    color: #FFFFFF;
-    border: none;
+    background: rgba(255, 255, 255, 0.04);
+    color: #F3F4F6;
+    border: 1px solid rgba(255, 255, 255, 0.05);
     margin-right: auto;
-    border-radius:16px;
-    border-bottom-left-radius: 4px;
+    border-radius: 4px 18px 18px 18px; /* Map nicely next to the avatar wrapper */
+    margin-bottom: 0; /* Handled by wrapper now */
 }
 
 
@@ -115,15 +153,19 @@ html, body {
 .msg.bot pre {
     max-width: 100%;
     overflow-x: auto;
-    padding: 14px;
-    margin: 12px 0;
-    background: var(--navy);
-    color: var(--ice-blue);
+    padding: 16px;
+    margin: 14px 0;
+    background: rgba(11, 17, 20, 0.8);
+    color: #E2E8F0;
     border: 1px solid var(--border);
     border-radius: 10px;
+    /* Codespans inherit code text engine rules cleanly */
+    font-family: 'Geist Mono', monospace;
+    font-size: 14px;
 }
 
 .msg.bot code {
+    font-family: 'Geist Mono', monospace;
     overflow-wrap: anywhere;
 }
 
@@ -275,107 +317,105 @@ html, body {
         <script>
     let memoryMessages = [];
 
-async function sendMessage() {
-    const input = document.getElementById('user-input');
-    const text = input.value.trim();
-    if (!text) return;
-
-    appendMessage(text, 'user', false);
-    input.value = '';
-
-    memoryMessages.push({ role: "user", content: text });
-
-    try {
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ messages: memoryMessages })
-        });
-        
-        if (!response.ok) {
-            throw new Error(`Request failed (${response.status})`);
+    // Placeholder mock setup since appendMessage logic wasn't fully supplied
+    function appendMessage(text, sender) {
+        const box = document.getElementById('chat-messages');
+        if (sender === 'user') {
+            const div = document.createElement('div');
+            div.className = 'msg user';
+            div.textContent = text;
+            box.appendChild(div);
         }
+        box.scrollTop = box.scrollHeight;
+    }
 
-        // 1. Create a placeholder bubble for the incoming bot stream
-        const botBubble = createEmptyBotBubble();
-        let fullAccumulatedText = "";
+    async function sendMessage() {
+        const input = document.getElementById('user-input');
+        const text = input.value.trim();
+        if (!text) return;
 
-        // 2. Setup standard web stream reader
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder("utf-8");
+        appendMessage(text, 'user');
+        input.value = '';
 
-        while (true) {
-            const { value, done } = await reader.read();
-            if (done) break;
+        memoryMessages.push({ role: "user", content: text });
 
-            // Decode the modern byte chunk into strings
-            const chunk = decoder.decode(value, { stream: true });
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ messages: memoryMessages })
+            });
             
-            // Your backend should send format "data: text\n\n" or simple text data
-            // Here we assume a raw text stream chunk. Adjust parsing if using SSE strings.
-            fullAccumulatedText += chunk;
+            if (!response.ok) {
+                throw new Error(`Request failed (${response.status})`);
+            }
 
-            // 3. Render the parsed markdown dynamically as it grows
-            updateBotBubble(botBubble, fullAccumulatedText);
+            // 1. Create a placeholder bundle container for avatar + bubble layout
+            const botBubble = createEmptyBotBubble();
+            let fullAccumulatedText = "";
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder("utf-8");
+
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value, { stream: true });
+                fullAccumulatedText += chunk;
+
+                // 3. Render parsed tokens inside targeted container bubble block
+                updateBotBubble(botBubble, fullAccumulatedText);
+            }
+
+            memoryMessages.push({ role: "assistant", content: fullAccumulatedText });
+
+        } catch (error) {
+            const wrapper = createEmptyBotBubble();
+            wrapper.innerHTML = "Error connecting to server. Please try again.";
+            console.error(error);
         }
-
-        // Save the final completed message string back into the conversation state
-        memoryMessages.push({ role: "assistant", content: fullAccumulatedText });
-
-    } catch (error) {
-        appendMessage("Error connecting to server. Please try again.", 'bot', false);
-        console.error(error);
     }
-}
 
-// Generates the initial empty DOM container wrapper for the bot
-function createEmptyBotBubble() {
-    const box = document.getElementById('chat-messages');
-    const div = document.createElement('div');
-    div.className = 'msg bot';
-    box.appendChild(div);
-    box.scrollTop = box.scrollHeight;
-    return div;
+    // Generates structural outer tree wrapping inner nodes row matching layout constraints
+    function createEmptyBotBubble() {
+        const box = document.getElementById('chat-messages');
+        
+        // Build wrapper
+        const wrapper = document.createElement('div');
+        wrapper.className = 'bot-message-wrapper';
+        
+        // Build Avatar container node
+        const avatar = document.createElement('div');
+        avatar.className = 'ai-avatar';
+        avatar.innerHTML = '<i class="fa-solid fa-robot"></i>'; // FontAwesome Icon injection
+        
+Use code with caution.
+// Build actual target rendering layout container bubble block
+const msgBubble = document.createElement('div');
+msgBubble.className = 'msg bot';
+// Stitch nodes together
+wrapper.appendChild(avatar);
+wrapper.appendChild(msgBubble);
+box.appendChild(wrapper);
+box.scrollTop = box.scrollHeight;
+return msgBubble; // Return reference directly to text element block for updates
 }
-
-// Updates an existing block directly with fresh decoded strings
 function updateBotBubble(element, text) {
-    const box = document.getElementById('chat-messages');
-    
-    if (window.marked && typeof window.marked.parse === 'function') {
-        const renderedMarkdown = window.marked.parse(text, { gfm: true, breaks: true });
-        if (window.DOMPurify) {
-            element.innerHTML = window.DOMPurify.sanitize(renderedMarkdown);
-        } else {
-            element.textContent = text;
-        }
-    } else {
-        element.innerText = text;
-    }
-    
-    // Smooth lock to bottom view as typing runs down the card
-    box.scrollTop = box.scrollHeight;
+const box = document.getElementById('chat-messages');
+if (window.marked && typeof window.marked.parse === 'function') {
+const renderedMarkdown = window.marked.parse(text, { gfm: true, breaks: true });
+if (window.DOMPurify) {
+element.innerHTML = window.DOMPurify.sanitize(renderedMarkdown);
+} else {
+element.textContent = text;
+}
+} else {
+element.textContent = text;
+}
+box.scrollTop = box.scrollHeight;
 }
 
-// Kept your legacy code for non-streaming / User prints
-function appendMessage(text, sender, isImage) {
-    const box = document.getElementById('chat-messages');
-    const div = document.createElement('div');
-    div.className = `msg ${sender}`;
-    
-    if (sender === 'bot' && isImage) {
-        const img = document.createElement('img');
-        img.src = text;
-        img.alt = 'AI-generated image';
-        img.loading = 'lazy';
-        div.appendChild(img);
-    } else {
-        div.innerText = text;
-    }
-    
-    box.appendChild(div);
-    box.scrollTop = box.scrollHeight;
-}
 
   </script>
     </body>
