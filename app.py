@@ -149,6 +149,7 @@ def chat():
                             for chunk in completion:
                                 if chunk.choices and chunk.choices[0].delta.content:
                                     yield chunk.choices[0].delta.content
+                                    
                         return Response(generate_stream(), mimetype='text/plain')
 
                     except Exception:
