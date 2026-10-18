@@ -3,6 +3,8 @@
     <head>
         <title>VeryfunandEducationalMathWebsite</title>
         <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
         <style>
           
 :root {
@@ -385,6 +387,28 @@ font-size:1em;
         max-width: 92%;
     }
 }
+            .msg.bot pre {
+    position: relative;
+    padding-top: 44px;
+}
+
+.copy-code {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--surface-hover);
+    color: var(--text);
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+}
+
+.copy-code:hover {
+    background: var(--blue-light);
+}
         </style>
     </head>
     <body>
@@ -490,6 +514,7 @@ function updateBotBubble(element, text) {
         const renderedMarkdown = window.marked.parse(text, { gfm: true, breaks: true });
         if (window.DOMPurify) {
             element.innerHTML = window.DOMPurify.sanitize(renderedMarkdown);
+            addCodeCopyButtons(element);
         } else {
             element.textContent = text;
         }
@@ -543,6 +568,32 @@ function newChat() {
                 <button onclick="askSuggestion('Create an image of ')">Create an image</button>
             </div>
         </div>`;
+}
+            function addCodeCopyButtons(element) {
+    element.querySelectorAll("pre").forEach((pre) => {
+        if (pre.querySelector(".copy-code")) return;
+
+        const button = document.createElement("button");
+        button.className = "copy-code";
+        button.type = "button";
+        button.textContent = "Copy";
+
+        button.addEventListener("click", async () => {
+            const code = pre.querySelector("code")?.innerText ?? pre.innerText;
+
+            try {
+                await navigator.clipboard.writeText(code);
+                button.textContent = "Copied!";
+                setTimeout(() => button.textContent = "Copy", 1500);
+            } catch (error) {
+                console.error("Could not copy code:", error);
+                button.textContent = "Copy failed";
+                setTimeout(() => button.textContent = "Copy", 1500);
+            }
+        });
+
+        pre.appendChild(button);
+    });
 }
   </script>
     </body>
