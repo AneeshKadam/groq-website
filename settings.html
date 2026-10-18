@@ -92,6 +92,12 @@ button:hover {
     placeholder="Describe the tone, detail, or format you prefer..."
 ></textarea>
 
-<button id="save-settings" type="button">Save instructions</button>
+<button id="save-settings" type="button" onclick="saveInstructions()">Save instructions</button>
 <p id="save-status" aria-live="polite"></p>
+        <script>
+function saveInstructions() {
+    const text = document.getElementById("system-instructions").value;
+    localStorage.setItem("aeroai-instructions", text);
+}
+</script>
     </body>
