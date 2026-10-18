@@ -131,6 +131,7 @@ def chat():
                         "Answer in plain, simple language. Start with the direct answer. "
                         "Keep replies concise unless the user asks for more detail. "
                         "Use Markdown when it helps readability.\n\n"
+                        "Explain simply. Only explain further if absolutely needed."
                         "User's response preferences:\n"
                         f"{custom_instructions}"
                     )
@@ -145,7 +146,7 @@ def chat():
                     model="openai/gpt-oss-120b",
                     messages=messages,
                     temperature=0.7,
-                    max_tokens=500,
+                    max_tokens=1000,
                     stream=True
                 )
             
