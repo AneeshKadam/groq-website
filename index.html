@@ -409,13 +409,24 @@ font-size:1em;
 .copy-code:hover {
     background: var(--blue-light);
 }
+            .icon {
+                z-index:999;
+            }
+            .settings {
+                color:white;
+                font-family: 'Geist', Arial;
+            }
+            .settings:visited {
+                color:white;
+                fot-family: 'Geist', Arial;
+            }
         </style>
     </head>
     <body>
      
    <header class="topbar">
     <a class="brand" href="/">AeroAI</a>
-       <a href="settings.html"><img src-="settings.png">Settings</a>
+       <a href="settings.html" class="settings"><img src-="settings.png" class="icon">Settings</a>
     <button class="new-chat" onclick="newChat()">New chat</button>
 </header>
         <div class="chat-box">
