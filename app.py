@@ -28,12 +28,12 @@ def chat():
         return jsonify({"reply": "Please send a message and try again.", "is_image": False}), 400
 
         if not all(
-        isinstance(message, dict)
-        and message.get("role") in ("user", "assistant", "system")
-        and isinstance(message.get("content"), str)
-        for message in chat_history
-    ):
-        return jsonify({"reply": "The chat history format is invalid.", "is_image": False}), 400
+            isinstance(message, dict)
+            and message.get("role") in ("user", "assistant", "system")
+            and isinstance(message.get("content"), str)
+            for message in chat_history
+        ):
+            return jsonify({"reply": "The chat history format is invalid.", "is_image": False}), 400
 
     last_user_message = next(
         (
