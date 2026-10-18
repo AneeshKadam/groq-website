@@ -120,7 +120,7 @@ def chat():
         if client is None:
             return jsonify({"reply": "Error: GROQ_API_KEY is not set on the server.", "is_image": False}), 500
 
-        try:
+                       try:
                         def generate_stream():
                             system_message = {
                                 "role": "system",
@@ -151,12 +151,12 @@ def chat():
                                     yield chunk.choices[0].delta.content
                         return Response(generate_stream(), mimetype='text/plain')
 
-        except Exception:
-            app.logger.exception("Groq chat streaming request failed")
-            return jsonify({
-                "reply": "Chat failed. Check the server logs and API configuration, then try again.",
-                "is_image": False
-            }), 502
+                    except Exception:
+                        app.logger.exception("Groq chat streaming request failed")
+                        return jsonify({
+                            "reply": "Chat failed. Check the server logs and API configuration, then try again.",
+                            "is_image": False
+                        }), 502
 
 
 if __name__ == '__main__':
