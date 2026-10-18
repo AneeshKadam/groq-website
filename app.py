@@ -36,10 +36,10 @@ def chat():
         ""
     )
 
-    custom_instructions = user_data.get("system_prompt", "")
-    if not isinstance(custom_instructions, str):
-        custom_instructions = ""
-    custom_instructions = custom_instructions[:1000]
+        custom_instructions = user_data.get("system_prompt", "")
+        if not isinstance(custom_instructions, str):
+            custom_instructions = ""
+        custom_instructions = custom_instructions[:1000]
 
     image_intent = (
         re.search(
@@ -116,35 +116,34 @@ def chat():
             return jsonify({"reply": "Error: GROQ_API_KEY is not set on the server.", "is_image": False}), 500
 
         try:
-            def generate_stream():
-                                system_message = {
-                    "role": "system",
-                    "content": (
-                        "Answer in plain, simple language. Start with the direct answer. "
-                        "Keep replies under 100 words unless the user asks for more detail. "
-                        "Use Markdown formatting when it helps readability.\n\n"
-                        "User's response preferences:\n"
-                        f"{custom_instructions}"
-                    )
-                }
+                        def generate_stream():
+                            system_message = {
+                                "role": "system",
+                                "content": (
+                                    "Answer in plain, simple language. Start with the direct answer. "
+                                    "Keep replies concise unless the user asks for more detail. "
+                                    "Use Markdown when it helps readability.\n\n"
+                                    "User's response preferences:\n"
+                                    f"{custom_instructions}"
+                                )
+                            }
             
-                messages = [system_message] + [
-                    message for message in chat_history
-                    if message.get("role") != "system"
-                ]
+                            messages = [system_message] + [
+                                message for message in chat_history
+                                if message.get("role") != "system"
+                            ]
             
-                completion = client.chat.completions.create(
-                    model="openai/gpt-oss-120b",
-                    messages=messages,
-                    temperature=0.7,
-                    max_tokens=500,
-                    stream=True
-                )
+                            completion = client.chat.completions.create(
+                                model="openai/gpt-oss-120b",
+                                messages=messages,
+                                temperature=0.7,
+                                max_tokens=500,
+                                stream=True
+                            )
             
-                for chunk in completion:
-                    if chunk.choices and chunk.choices[0].delta.content:
-                        yield chunk.choices[0].delta.content
-                        
+                            for chunk in completion:
+                                if chunk.choices and chunk.choices[0].delta.content:
+                                    yield chunk.choices[0].delta.content
             return Response(generate_stream(), mimetype='text/plain')
 
         except Exception:
