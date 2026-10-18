@@ -432,7 +432,7 @@ async function sendMessage() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 messages: memoryMessages,
-            system_prompt: localStorage.getItem('aeroai-instructions') || ''})
+                system_prompt: localStorage.getItem('aeroai-instructions') || ""})
         });
         
         if (!response.ok) {
