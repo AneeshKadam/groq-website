@@ -120,7 +120,7 @@ def chat():
         if client is None:
             return jsonify({"reply": "Error: GROQ_API_KEY is not set on the server.", "is_image": False}), 500
 
-                       try:
+                    try:
                         def generate_stream():
                             system_message = {
                                 "role": "system",
