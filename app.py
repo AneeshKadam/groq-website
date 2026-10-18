@@ -36,6 +36,25 @@ def chat():
         re.search(r"\b(generate|create|make)\b.{0,60}\b(image|picture|photo|illustration|artwork)\b", last_user_message, re.I)
         or re.search(r"\b(draw|paint)\b(?:\s+me)?\s+(?:an?\s+)?", last_user_message, re.I)
         or re.search(r"\b(picture|image|photo)\s+of\b", last_user_message, re.I)
+        custom_instructions = user_data.get("system_prompt", "")
+if not isinstance(custom_instructions, str):
+    custom_instructions = ""
+custom_instructions = custom_instructions[:1000]
+
+system_message = {
+    "role": "system",
+    "content": (
+        "Answer in plain, simple language. Start with the direct answer. "
+        "Keep replies concise unless the user asks for more detail.\n\n"
+        "User's response preferences:\n"
+        f"{custom_instructions}"
+    )
+}
+
+messages = [system_message] + [
+    message for message in chat_history
+    if message.get("role") != "system"
+]
     )
     
     if image_intent:
