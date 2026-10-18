@@ -2,16 +2,7 @@
 <html>
     <head>
         <title>VeryfunandEducationalMathWebsite</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://googleapis.com" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-        <script src="./taskbar.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js" defer></script>
-        <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
         <style>
           
 :root {
@@ -274,19 +265,152 @@ font-size:1em;
             * {
                 box-sizing:border-box;
             }
+            body {
+    background: var(--background);
+}
+
+.topbar {
+    height: 64px;
+    flex: 0 0 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--background);
+}
+
+.brand {
+    color: var(--text);
+    font-size: 18px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.new-chat,
+.suggestions button {
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 13px;
+    font: inherit;
+    cursor: pointer;
+}
+
+.new-chat:hover,
+.suggestions button:hover {
+    background: var(--surface-hover);
+}
+
+.chat-box {
+    width: min(100%, 1000px);
+    margin: 0 auto;
+    background: var(--background);
+}
+
+.messages {
+    padding: 32px 24px;
+    background: var(--background);
+}
+
+.msg {
+    max-width: min(80%, 720px);
+    padding: 12px 16px;
+}
+
+.msg.bot {
+    background: var(--surface);
+    border: 1px solid var(--border);
+}
+
+.msg.user {
+    background: var(--blue);
+    border: 0;
+}
+
+.welcome {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: var(--text);
+}
+
+.welcome h1 {
+    margin: 0 0 8px;
+    font-size: clamp(28px, 4vw, 40px);
+}
+
+.welcome p {
+    margin: 0 0 24px;
+    color: var(--text-muted);
+}
+
+.suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.input-area {
+    position: sticky;
+    bottom: 0;
+    padding: 14px 24px 20px;
+    background: var(--background);
+}
+
+.input-area input {
+    background: var(--surface);
+}
+
+@media (max-width: 600px) {
+    .topbar {
+        padding: 0 16px;
+    }
+
+    .messages {
+        padding: 20px 16px;
+    }
+
+    .input-area {
+        padding: 10px 16px 16px;
+    }
+
+    .msg {
+        max-width: 92%;
+    }
+}
         </style>
     </head>
     <body>
      
-   
+   <header class="topbar">
+    <a class="brand" href="/">AeroAI</a>
+    <button class="new-chat" onclick="newChat()">New chat</button>
+</header>
         <div class="chat-box">
-    <div class="messages" id="chat-messages"></div>
+    <div class="messages" id="chat-messages">
+        <div class="welcome" id="welcome">
+            <h1>What can I help with?</h1>
+            <p>Ask a question, explore an idea, or create an image.</p>
+            <div class="suggestions">
+                <button onclick="askSuggestion('Explain a topic simply')">Explain a topic</button>
+                <button onclick="askSuggestion('Help me brainstorm ideas')">Brainstorm ideas</button>
+                <button onclick="askSuggestion('Create an image of ')">Create an image</button>
+            </div>
+        </div>
+    </div>
+
     <div class="input-area">
-        <input type="text" id="user-input" placeholder="Talk to AeroAI." onkeydown="if(event.key === 'Enter') sendMessage()">
+        <input type="text" id="user-input" placeholder="Message AeroAI"
+               onkeydown="if(event.key === 'Enter') sendMessage()">
         <button onclick="sendMessage()">Send</button>
     </div>
 </div>
-    </div>
         <script>
     let memoryMessages = [];
 
@@ -391,7 +515,30 @@ function appendMessage(text, sender, isImage) {
     box.appendChild(div);
     box.scrollTop = box.scrollHeight;
 }
+function askSuggestion(text) {
+    const input = document.getElementById('user-input');
+    input.value = text;
+    input.focus();
 
+    // For the image prompt, let the user finish describing the image.
+    if (text.endsWith('of ')) return;
+
+    sendMessage();
+}
+
+function newChat() {
+    memoryMessages = [];
+    document.getElementById('chat-messages').innerHTML = `
+        <div class="welcome" id="welcome">
+            <h1>What can I help with?</h1>
+            <p>Ask a question, explore an idea, or create an image.</p>
+            <div class="suggestions">
+                <button onclick="askSuggestion('Explain a topic simply')">Explain a topic</button>
+                <button onclick="askSuggestion('Help me brainstorm ideas')">Brainstorm ideas</button>
+                <button onclick="askSuggestion('Create an image of ')">Create an image</button>
+            </div>
+        </div>`;
+}
   </script>
     </body>
 </html>
