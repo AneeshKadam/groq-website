@@ -107,6 +107,7 @@ def chat():
                 system_message = {
                     "role": "system",
                     "content": "Answer in plain, simple language. Start with the direct answer. Keep replies under 100 words unless the user asks for more detail."
+                    "Markdown": "Answer in markdown formatting when needed."
                 }
             
                 messages = [system_message] + [
