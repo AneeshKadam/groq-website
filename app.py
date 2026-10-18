@@ -30,31 +30,25 @@ def chat():
     if not all(isinstance(message, dict) and message.get("role") in ("user", "assistant", "system") and isinstance(message.get("content"), str) for message in chat_history):
         return jsonify({"reply": "The chat history format is invalid.", "is_image": False}), 400
 
-    last_user_message = next((message["content"] for message in reversed(chat_history) if message.get("role") == "user"), "")
+        last_user_message = next(
+        (message["content"] for message in reversed(chat_history)
+         if message.get("role") == "user"),
+        ""
+    )
+
+    custom_instructions = user_data.get("system_prompt", "")
+    if not isinstance(custom_instructions, str):
+        custom_instructions = ""
+    custom_instructions = custom_instructions[:1000]
 
     image_intent = (
-        re.search(r"\b(generate|create|make)\b.{0,60}\b(image|picture|photo|illustration|artwork)\b", last_user_message, re.I)
+        re.search(
+            r"\b(generate|create|make)\b.{0,60}\b(image|picture|photo|illustration|artwork)\b",
+            last_user_message,
+            re.I,
+        )
         or re.search(r"\b(draw|paint)\b(?:\s+me)?\s+(?:an?\s+)?", last_user_message, re.I)
         or re.search(r"\b(picture|image|photo)\s+of\b", last_user_message, re.I)
-        custom_instructions = user_data.get("system_prompt", "")
-if not isinstance(custom_instructions, str):
-    custom_instructions = ""
-custom_instructions = custom_instructions[:1000]
-
-system_message = {
-    "role": "system",
-    "content": (
-        "Answer in plain, simple language. Start with the direct answer. "
-        "Keep replies concise unless the user asks for more detail.\n\n"
-        "User's response preferences:\n"
-        f"{custom_instructions}"
-    )
-}
-
-messages = [system_message] + [
-    message for message in chat_history
-    if message.get("role") != "system"
-]
     )
     
     if image_intent:
@@ -123,10 +117,15 @@ messages = [system_message] + [
 
         try:
             def generate_stream():
-                system_message = {
+                                system_message = {
                     "role": "system",
-                    "content": "Answer in plain, simple language. Start with the direct answer. Keep replies under 100 words unless the user asks for more detail."
-                    "content": "Answer in markdown formatting when needed."
+                    "content": (
+                        "Answer in plain, simple language. Start with the direct answer. "
+                        "Keep replies under 100 words unless the user asks for more detail. "
+                        "Use Markdown formatting when it helps readability.\n\n"
+                        "User's response preferences:\n"
+                        f"{custom_instructions}"
+                    )
                 }
             
                 messages = [system_message] + [
