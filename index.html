@@ -11,7 +11,7 @@
     --blue-light: #3282B8;
     --ice-blue: #BBE1FA;
 
-    --background: #1B262C;
+    --background: #000000;
     --surface: #24343D;
     --surface-hover: #2C404B;
     --text: #EAF4FA;
@@ -398,8 +398,8 @@ font-size:1em;
             <h1>What can I help with?</h1>
             <p>Ask a question, explore an idea, or create an image.</p>
             <div class="suggestions">
-                <button onclick="askSuggestion('Explain a topic simply')">Explain a topic</button>
-                <button onclick="askSuggestion('Help me brainstorm ideas')">Brainstorm ideas</button>
+                <button onclick="askSuggestion('Explain a complex topic simply.')">Explain a topic</button>
+                <button onclick="askSuggestion('Can you code a simple website for me?')">Code A Website</button>
                 <button onclick="askSuggestion('Create an image of ')">Create an image</button>
             </div>
         </div>
@@ -418,6 +418,7 @@ async function sendMessage() {
     const input = document.getElementById('user-input');
     const text = input.value.trim();
     if (!text) return;
+    document.getElementById('welcome')?.remove();
 
     appendMessage(text, 'user', false);
     input.value = '';
