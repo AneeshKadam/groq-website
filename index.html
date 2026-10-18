@@ -430,7 +430,9 @@ async function sendMessage() {
         const response = await fetch('/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ messages: memoryMessages })
+            body: JSON.stringify({ 
+                messages: memoryMessages,
+            system_prompt: localStorage.getItem('aeroai-instructions') || ''})
         });
         
         if (!response.ok) {
