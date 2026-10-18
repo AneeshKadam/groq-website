@@ -44,10 +44,10 @@ def chat():
         ""
     )
 
-        custom_instructions = user_data.get("system_prompt", "")
-        if not isinstance(custom_instructions, str):
-            custom_instructions = ""
-        custom_instructions = custom_instructions[:1000]
+    custom_instructions = user_data.get("system_prompt", "")
+    if not isinstance(custom_instructions, str):
+        custom_instructions = ""
+    custom_instructions = custom_instructions[:1000]
 
     image_intent = (
         re.search(
