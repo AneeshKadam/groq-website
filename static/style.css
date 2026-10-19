@@ -86,6 +86,7 @@ background: rgba(1, 90, 199, 0.2);
 backdrop-filter: blur(2px);
 font-size:1em;
     font-family:'Geist', Inter, Arial;
+    right:75%;
 }
 
 
@@ -102,6 +103,7 @@ font-size:1em;
         backdrop-filter: blur(2px);
     font-family:'Geist', Inter, Arial;
     font-size:1em;
+    left:75%;
 }
 
 
