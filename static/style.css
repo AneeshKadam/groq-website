@@ -42,6 +42,7 @@ html, body {
     overflow: hidden;
     box-shadow: none;
     flex: 1 1 auto;
+    width:100vw;
 }
 
 .messages {
@@ -305,7 +306,7 @@ font-size:1em;
 .messages {
     padding: 32px 24px;
     background: var(--background);
-    width:100vw;
+    width:100%;
 }
 
 .msg {
@@ -368,7 +369,7 @@ font-size:1em;
 
     .messages {
         padding: 20px 16px;
-        width:100vw;
+        width:100%;
     }
 
     .input-area {
