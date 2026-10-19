@@ -305,6 +305,7 @@ font-size:1em;
 .messages {
     padding: 32px 24px;
     background: var(--background);
+    width:100vw;
 }
 
 .msg {
