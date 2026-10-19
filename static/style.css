@@ -368,8 +368,11 @@ font-size:1em;
     }
 
     .messages {
-        padding: 20px 16px;
-        width:100%;
+        flex: 1 1 auto; /* allow it to grow and take available space */
+    min-height: 0;  /* required so overflow:auto can shrink properly */
+    padding: 32px 24px;
+    background: var(--background);
+    width: 100%;
     }
 
     .input-area {
