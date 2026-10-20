@@ -97,4 +97,15 @@ button:hover {
 
 <button id="save-settings" type="button">Save instructions</button>
 <p id="save-status" aria-live="polite"></p>
+        <script>
+const instructions = document.getElementById("system-instructions");
+const saveButton = document.getElementById("save-settings");
+
+instructions.value = localStorage.getItem("aeroai-instructions") || "";
+
+saveButton.addEventListener("click", () => {
+    localStorage.setItem("aeroai-instructions", instructions.value.trim());
+    document.getElementById("save-status").textContent = "Saved!";
+});
+</script>
     </body>
