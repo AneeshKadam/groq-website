@@ -19,7 +19,9 @@ body {
     min-height: 100dvh;
     display: flex;
     flex-direction: column;
-    background: linear-gradient(#000000, #1B262C);
+    background:
+        radial-gradient(ellipse at 50% 30%, #182b3b 0%, #0b1118 55%, #07090d 100%);
+    background-attachment: fixed;
      
 }
 html, body {
@@ -44,7 +46,6 @@ html, body {
     box-shadow: none;
     flex: 1 1 auto;
     width:100vw;
-    background: transparent;
 }
 
 .messages {
@@ -58,7 +59,6 @@ html, body {
     overflow-wrap: anywhere;
     scrollbar-gutter: stable;
     scrollbar-color: var(--blue-light) transparent;
-    backgroung: transparent;
 }
 
 
@@ -275,7 +275,7 @@ font-size:1em;
     justify-content: space-between;
     padding: 0 24px;
     border-bottom: 1px solid var(--border);
-    background: var(--background);
+    
 }
 
 .brand {
@@ -402,3 +402,9 @@ font-size:1em;
                 color:white;
                 font-family: 'Geist', Arial;
             }
+.chat-box,
+.messages,
+.topbar,
+.input-area {
+    background: transparent;
+}
