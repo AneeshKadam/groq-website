@@ -442,3 +442,6 @@ body::before {
         animation: none;
     }
 }
+.settings {
+    text-decoration:none;
+}
