@@ -271,9 +271,9 @@ font-size:1em;
     height: 64px;
     flex: 0 0 64px;
     display: flex;
-    align-items: center;
+    align-items: right;
     justify-content: space-between;
-    padding: 5px;
+    padding: 10px;
     border-bottom: 1px solid var(--border);
     
 }
@@ -444,4 +444,18 @@ body::before {
 }
 .settings {
     text-decoration:none;
+    color: var(--text);
+    cursor: pointer;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 13px;
+}
+.brand {
+    color: var(--text);
+    cursor: pointer;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 13px;
 }
