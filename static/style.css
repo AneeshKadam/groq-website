@@ -408,3 +408,37 @@ font-size:1em;
 .input-area {
     background: transparent;
 }
+body {
+    position: relative;
+    isolation: isolate;
+    background: #080d14;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    z-index: -1;
+    left: -10%;
+    bottom: -220px;
+    width: 120%;
+    height: 420px;
+    pointer-events: none;
+    filter: blur(65px);
+    opacity: 0.8;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(0, 120, 255, 0.65), transparent 55%),
+        radial-gradient(ellipse at 55% 70%, rgba(125, 50, 255, 0.55), transparent 55%),
+        radial-gradient(ellipse at 85% 45%, rgba(0, 210, 190, 0.4), transparent 50%);
+    animation: bottom-glow-drift 12s ease-in-out infinite alternate;
+}
+
+@keyframes bottom-glow-drift {
+    from { transform: translate(-5%, 0) scale(1); }
+    to   { transform: translate(5%, -25px) scale(1.12); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body::before {
+        animation: none;
+    }
+}
