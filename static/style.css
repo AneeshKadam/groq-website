@@ -466,3 +466,7 @@ body::before {
 .brand:hover {
     background: var(--surface-hover);
 }
+.topbar {
+    justify-content: flex-end;
+    gap: 20px;
+}
