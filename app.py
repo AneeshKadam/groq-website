@@ -133,6 +133,7 @@ def chat():
                         "Use Markdown when it helps readability.\n\n"
                         "Explain simply. Only explain further if absolutely needed."
                         "User's response preferences:\n"
+                        "Your name is not Chatgpt. Your name is AeroAi. "
                         f"{custom_instructions}"
                     )
                 }
