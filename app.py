@@ -94,7 +94,6 @@ def chat():
                 CF_API_URL,
                 headers=headers,
                 json={"prompt": clean_prompt},
-                timeout=90,
             )
 
             if response.ok:
@@ -147,7 +146,6 @@ def chat():
                     model="openai/gpt-oss-120b",
                     messages=messages,
                     temperature=0.7,
-                    max_tokens=1000,
                     stream=True
                 )
             
